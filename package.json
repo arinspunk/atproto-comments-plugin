@@ -1,0 +1,27 @@
+{
+	"name": "atproto-comments-plugin",
+	"version": "0.1.0",
+	"private": true,
+	"description": "WordPress plugin that shows AT Protocol replies as post comments.",
+	"license": "GPL-2.0-or-later",
+	"scripts": {
+		"vendor": "node scripts/vendor.mjs",
+		"build": "npm run vendor && wp-scripts build editor=./src/editor/index.js --output-path=build",
+		"start": "wp-scripts start editor=./src/editor/index.js --output-path=build",
+		"test:js": "wp-scripts test-unit-js",
+		"test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments vendor/bin/phpunit",
+		"test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments env WP_TESTS_MULTISITE=1 vendor/bin/phpunit",
+		"wp-env": "wp-env",
+		"lint:js": "wp-scripts lint-js src tests/js",
+		"make-pot": "wp-env run cli --env-cwd=wp-content/plugins/atproto-comments wp i18n make-pot . languages/atproto-comments.pot --slug=atproto-comments --domain=atproto-comments --exclude=node_modules,vendor,tests,assets/vendor,src,scripts"
+	},
+	"dependencies": {
+		"atproto-comments": "1.1.0"
+	},
+	"devDependencies": {
+		"@wordpress/env": "11.17.0",
+		"@wordpress/scripts": "36.1.0",
+		"vite": "8.3.4",
+		"vitest": "5.0.4"
+	}
+}

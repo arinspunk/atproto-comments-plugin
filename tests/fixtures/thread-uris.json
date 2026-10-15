@@ -1,0 +1,155 @@
+{
+	"$comment": "Shared cases for Thread_Uri::normalize() (PHP) and normalize() (src/editor/thread-uri.js). Each case: input and expected result.",
+	"cases": [
+		{
+			"name": "at:// con did:plc",
+			"input": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "at:// con did:web",
+			"input": "at://did:web:example.com/app.bsky.feed.post/3mwso7oovnp2u",
+			"expected": { "ok": true, "uri": "at://did:web:example.com/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "at:// con did:web y puerto",
+			"input": "at://did:web:localhost%3A8080/app.bsky.feed.post/3mwso7oovnp2u",
+			"expected": { "ok": true, "uri": "at://did:web:localhost%3A8080/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "at:// con rkey con caracteres permitidos",
+			"input": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/a.b_c~d:e-f",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/a.b_c~d:e-f" }
+		},
+		{
+			"name": "URL de bsky.app con DID",
+			"input": "https://bsky.app/profile/did:plc:abc234567abcdefghijklmno/post/3mwso7oovnp2u",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "URL de mu.social con DID",
+			"input": "https://mu.social/profile/did:plc:abc234567abcdefghijklmno/post/3mwso7oovnp2u",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "URL de app con did:web",
+			"input": "https://bsky.app/profile/did:web:example.com/post/3mwso7oovnp2u",
+			"expected": { "ok": true, "uri": "at://did:web:example.com/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "URL de app con barra final",
+			"input": "https://bsky.app/profile/did:plc:abc234567abcdefghijklmno/post/3mwso7oovnp2u/",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "URL de app con query",
+			"input": "https://bsky.app/profile/did:plc:abc234567abcdefghijklmno/post/3mwso7oovnp2u?ref=share",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "URL de app con fragmento",
+			"input": "https://bsky.app/profile/did:plc:abc234567abcdefghijklmno/post/3mwso7oovnp2u#reply",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "URL de app con barra final, query y fragmento",
+			"input": "https://bsky.app/profile/did:plc:abc234567abcdefghijklmno/post/3mwso7oovnp2u/?a=1#b",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "Espacios alrededor",
+			"input": "  \t https://bsky.app/profile/did:plc:abc234567abcdefghijklmno/post/3mwso7oovnp2u \n",
+			"expected": { "ok": true, "uri": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u" }
+		},
+		{
+			"name": "Cadena vacía (desvincula)",
+			"input": "",
+			"expected": { "ok": true, "uri": "" }
+		},
+		{
+			"name": "Solo espacios (desvincula)",
+			"input": "   ",
+			"expected": { "ok": true, "uri": "" }
+		},
+		{
+			"name": "URL de app con handle",
+			"input": "https://bsky.app/profile/usoritual.com/post/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "handle" }
+		},
+		{
+			"name": "at:// con handle",
+			"input": "at://usoritual.com/app.bsky.feed.post/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "handle" }
+		},
+		{
+			"name": "URL de app con handle de bsky.social",
+			"input": "https://bsky.app/profile/someone.bsky.social/post/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "handle" }
+		},
+		{
+			"name": "Colección distinta",
+			"input": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.like/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "DID plc demasiado corto",
+			"input": "at://did:plc:abc123/app.bsky.feed.post/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "DID plc con caracteres fuera de base32",
+			"input": "at://did:plc:abc018967abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "Método de DID no admitido",
+			"input": "at://did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK/app.bsky.feed.post/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "URL de app con DID mal formado",
+			"input": "https://bsky.app/profile/did:plc:ABC234567ABCDEFGHIJKLMNO/post/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "rkey .",
+			"input": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/.",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "rkey ..",
+			"input": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/..",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "rkey vacío",
+			"input": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "rkey con caracteres no permitidos",
+			"input": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/abc$def",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "Esquema http",
+			"input": "http://bsky.app/profile/did:plc:abc234567abcdefghijklmno/post/3mwso7oovnp2u",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "URL que no es de un post",
+			"input": "https://bsky.app/profile/did:plc:abc234567abcdefghijklmno",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "at:// con barra final",
+			"input": "at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u/",
+			"expected": { "ok": false, "error": "format" }
+		},
+		{
+			"name": "Texto cualquiera",
+			"input": "hola",
+			"expected": { "ok": false, "error": "format" }
+		}
+	]
+}

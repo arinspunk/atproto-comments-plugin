@@ -1,0 +1,21 @@
+schema: spec-driven
+
+context: |
+  Plugin de WordPress que envuelve el web component atproto-comments (npm).
+  Escribe todos los artefactos en español.
+  Compatibilidad mínima: WordPress 6.5 y PHP 7.4. Sin sintaxis de PHP 8
+  (match, tipos unión, propiedades promovidas, named arguments).
+  Distribución en WordPress.org: GPLv2+, sin CDN ni código remoto, todo
+  servicio externo declarado en "External services" de readme.txt.
+  Prefijos: namespace AtprotoComments, constantes ATPROTO_COMMENTS_,
+  opciones y hooks atproto_comments_, metas _atproto_, text domain atproto-comments.
+  Las llamadas del servidor a la red usan wp_remote_* con timeout y errores traducibles.
+  No se fija bsky.social ni ningún PDS en el código; la identidad se resuelve.
+
+rules:
+  design:
+    - Indica las alternativas descartadas en cada decisión
+    - Indica qué se verifica contra WP 6.5 y qué contra la última versión
+  tasks:
+    - Cada tarea termina con cómo se verifica
+    - Los tests se escriben en la misma tarea que el código que cubren

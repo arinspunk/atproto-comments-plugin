@@ -1,0 +1,177 @@
+# Copyright (C) 2026 Xúlio Zé
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: AT Protocol Comments 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/atproto-comments\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-15T13:46:26+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: atproto-comments\n"
+
+#. Plugin Name of the plugin
+#: atproto-comments.php
+#: includes/class-settings.php:192
+#: includes/class-settings.php:193
+msgid "AT Protocol Comments"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: atproto-comments.php
+msgid "https://github.com/arinspunk/atproto-comments-plugin"
+msgstr ""
+
+#. Description of the plugin
+#: atproto-comments.php
+msgid "Shows replies to an AT Protocol (Bluesky) post as the comments of a post."
+msgstr ""
+
+#. Author of the plugin
+#: atproto-comments.php
+msgid "Xúlio Zé"
+msgstr ""
+
+#: includes/class-post-meta.php:74
+#: build/editor.js:1
+msgid "AT Protocol comments"
+msgstr ""
+
+#: includes/class-post-meta.php:93
+#: build/editor.js:1
+msgid "Thread link"
+msgstr ""
+
+#: includes/class-post-meta.php:101
+#: build/editor.js:1
+msgid "Paste the at:// URI of the post, or its URL with the DID (did:…). Leave empty to unlink."
+msgstr ""
+
+#: includes/class-post-meta.php:193
+msgid "The AT Protocol link uses a handle. Paste the at:// URI or the post URL with the DID (did:…) instead. The previous link has been kept."
+msgstr ""
+
+#: includes/class-post-meta.php:195
+msgid "The AT Protocol link is not valid. Paste an at:// URI of a post or a post URL with the DID, like https://bsky.app/profile/did:plc:…/post/…. The previous link has been kept."
+msgstr ""
+
+#: includes/class-settings.php:123
+msgid "The AppView must be a valid https URL. The previous value has been kept."
+msgstr ""
+
+#: includes/class-settings.php:133
+msgid "The maximum depth must be a whole number between 1 and 20. The previous value has been kept."
+msgstr ""
+
+#: includes/class-settings.php:207
+msgid "AppView"
+msgstr ""
+
+#: includes/class-settings.php:208
+msgid "Maximum depth"
+msgstr ""
+
+#: includes/class-settings.php:209
+#: includes/class-settings.php:292
+msgid "Position"
+msgstr ""
+
+#: includes/class-settings.php:210
+#: includes/class-settings.php:311
+msgid "Content types"
+msgstr ""
+
+#: includes/class-settings.php:260
+msgid "Server that visitors' browsers query to load the replies. Must use https."
+msgstr ""
+
+#: includes/class-settings.php:276
+msgid "How many levels of nested replies to load (1–20). Deeper replies link to the full thread."
+msgstr ""
+
+#: includes/class-settings.php:287
+msgid "Replace the native comments"
+msgstr ""
+
+#: includes/class-settings.php:288
+msgid "After the content, keeping the native comments"
+msgstr ""
+
+#: includes/class-settings.php:319
+msgid "Content types where posts can be linked to an AT Protocol thread."
+msgstr ""
+
+#: includes/class-ui-strings.php:45
+msgid "Comment"
+msgstr ""
+
+#: includes/class-ui-strings.php:46
+msgid "Reply"
+msgstr ""
+
+#. translators: Accessible label of the reply button. {name} is the author's name; keep it as is.
+#: includes/class-ui-strings.php:48
+msgid "Reply to {name}"
+msgstr ""
+
+#: includes/class-ui-strings.php:49
+msgid "Other app"
+msgstr ""
+
+#. translators: Placeholder of the field where visitors type the domain of their AT Protocol app.
+#: includes/class-ui-strings.php:51
+msgid "app.example"
+msgstr ""
+
+#: includes/class-ui-strings.php:52
+msgid "Invalid domain"
+msgstr ""
+
+#: includes/class-ui-strings.php:53
+msgid "Comments couldn't be loaded."
+msgstr ""
+
+#: includes/class-ui-strings.php:54
+msgid "View more on Bluesky"
+msgstr ""
+
+#: includes/class-ui-strings.php:55
+msgctxt "relative time under one minute"
+msgid "now"
+msgstr ""
+
+#. translators: Abbreviation of "minutes", shown after a number as in "5 m".
+#: includes/class-ui-strings.php:57
+msgctxt "abbreviation of minutes"
+msgid "m"
+msgstr ""
+
+#. translators: Abbreviation of "hours", shown after a number as in "5 h".
+#: includes/class-ui-strings.php:59
+msgctxt "abbreviation of hours"
+msgid "h"
+msgstr ""
+
+#. translators: Abbreviation of "days", shown after a number as in "5 d".
+#: includes/class-ui-strings.php:61
+msgctxt "abbreviation of days"
+msgid "d"
+msgstr ""
+
+#. translators: Abbreviation of "months", shown after a number as in "5 mo".
+#: includes/class-ui-strings.php:63
+msgctxt "abbreviation of months"
+msgid "mo"
+msgstr ""
+
+#: build/editor.js:1
+msgid "This link uses a handle. Paste the at:// URI or the post URL with the DID (did:…) instead."
+msgstr ""
+
+#: build/editor.js:1
+msgid "This is not a valid AT Protocol post link. Paste an at:// URI of a post or a post URL with the DID, like https://bsky.app/profile/did:plc:…/post/…."
+msgstr ""
