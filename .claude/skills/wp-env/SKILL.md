@@ -46,13 +46,11 @@ Parar: `npx wp-env stop` (conserva los datos). Borrar todo: `npx wp-env destroy`
 
 ### Plugin Check
 
-Sin exclusiones escanea `node_modules/` y no termina. Usa:
-
 ```bash
-npx wp-env run cli wp plugin check atproto-comments \
-  --exclude-directories=node_modules,vendor,tests,scripts,openspec,.claude \
-  --exclude-files=PROXIMOS-PASOS.md,composer.json,composer.lock,package.json,package-lock.json,phpcs.xml.dist,phpunit.xml.dist,.wp-env.json,.wp-env.override.json,eslint.config.cjs,.gitignore,README.md,.DS_Store,.phpunit.result.cache
+npm run plugin-check
 ```
+
+El script lleva las exclusiones necesarias (`.git`, `node_modules`, `vendor`, `tests`, archivos de configuración…); sin ellas el escaneo no termina o tarda minutos. **Devuelve código 0 aunque haya errores**: revisa la salida y busca filas con `ERROR`.
 
 ## Trampas conocidas
 

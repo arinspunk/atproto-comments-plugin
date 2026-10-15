@@ -1,0 +1,8 @@
+# Only GitHub Actions: npm and Composer dependencies use exact versions on purpose
+# and are updated by hand.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

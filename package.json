@@ -13,7 +13,8 @@
 		"test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments env WP_TESTS_MULTISITE=1 vendor/bin/phpunit",
 		"wp-env": "wp-env",
 		"lint:js": "wp-scripts lint-js src tests/js",
-		"make-pot": "wp-env run cli --env-cwd=wp-content/plugins/atproto-comments wp i18n make-pot . languages/atproto-comments.pot --slug=atproto-comments --domain=atproto-comments --exclude=node_modules,vendor,tests,assets/vendor,src,scripts"
+		"make-pot": "wp-env run cli --env-cwd=wp-content/plugins/atproto-comments wp i18n make-pot . languages/atproto-comments.pot --slug=atproto-comments --domain=atproto-comments --exclude=node_modules,vendor,tests,assets/vendor,src,scripts",
+		"plugin-check": "wp-env run cli wp plugin check atproto-comments --exclude-directories=.git,node_modules,vendor,tests,scripts,openspec,.claude,.github --exclude-files=PROXIMOS-PASOS.md,composer.json,composer.lock,package.json,package-lock.json,phpcs.xml.dist,phpunit.xml.dist,.wp-env.json,.wp-env.override.json,eslint.config.cjs,.gitignore,.nvmrc,README.md,.DS_Store,.phpunit.result.cache"
 	},
 	"dependencies": {
 		"atproto-comments": "1.1.0"
