@@ -109,7 +109,7 @@ Alternativas descartadas:
 ## Risks / Trade-offs
 
 - [`plugin-check` y los temas se descargan en su última versión, así que una regla nueva de Plugin Check puede poner la CI en rojo sin tocar el código] → Es lo que interesa saber antes de enviar a WordPress.org. Si bloquea una PR urgente, se puede relanzar con `workflow_dispatch` tras corregir, o fijar temporalmente la versión del zip en `.wp-env.json`.
-- [Fallos de red al descargar WordPress o plugins en wp-env (falsos rojos)] → Reintentar el job. Si se repite, añadir un reintento del arranque.
+- [Fallos de red al descargar WordPress o plugins en wp-env (falsos rojos)] → El paso de arranque reintenta `wp-env start` hasta 3 veces, con 15 s de espera; se añadió tras ver un `ETIMEDOUT` en la tercera ejecución real. Si aun así falla, se relanza el job (`gh run rerun <id> --failed`).
 - [El arranque de wp-env alarga cada PR unos minutos] → Jobs en paralelo y cancelación de ejecuciones obsoletas.
 - [El nombre de la carpeta del checkout en el runner difiere del local] → El mapeo de `.wp-env.json` monta `.` como `wp-content/plugins/atproto-comments`, independiente del nombre de la carpeta.
 - [El ruleset exige checks por nombre: si se renombra un job, la PR queda esperando un check que ya no existe] → Nombres fijos en el workflow, y cualquier cambio de nombre se hace en la misma PR que actualiza `.github/rulesets/main.json`.

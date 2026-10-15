@@ -19,8 +19,8 @@
 
 ## 4. Verificación en GitHub
 
-- [ ] 4.1 Subir los cambios en una rama, abrir una PR contra `main` y verificar que los tres jobs (`js`, `phpcs` y las dos entradas de `phpunit`) terminan en verde y que el total queda por debajo de 10 minutos
-- [ ] 4.2 En esa misma PR, empujar un commit temporal que rompa un test de PHP, verificar que solo falla `phpunit` (en las dos entradas) y revertirlo hasta volver a verde
+- [x] 4.1 Subir los cambios en una rama, abrir una PR contra `main` y verificar que los tres jobs (`js`, `phpcs` y las dos entradas de `phpunit`) terminan en verde y que el total queda por debajo de 10 minutos
+- [x] 4.2 En esa misma PR, empujar un commit temporal que rompa un test de PHP, verificar que solo falla `phpunit` (en las dos entradas) y revertirlo hasta volver a verde
 
 ## 5. Protección de `main`
 

@@ -64,7 +64,15 @@ jobs:
         if: matrix.env == 'latest'
         run: |
           echo '{ "core": null, "phpVersion": "8.3" }' > .wp-env.override.json
-      - run: npx wp-env start
+      - name: Start wp-env
+        # Downloads of WordPress, themes and plugins sometimes time out: retry.
+        run: |
+          for attempt in 1 2 3; do
+            npx wp-env start && exit 0
+            echo "::warning::wp-env start failed (attempt $attempt of 3)."
+            sleep 15
+          done
+          exit 1
       - run: npx wp-env run cli wp core version
       - run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments composer install --no-interaction --no-progress
       - run: npm run test:php
