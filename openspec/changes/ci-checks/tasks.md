@@ -24,7 +24,7 @@
 
 ## 5. Protección de `main`
 
-- [ ] 5.1 Crear `.github/rulesets/main.json` (rama por defecto; PR obligatoria con 0 aprobaciones; checks `js`, `phpcs`, `phpunit (minimum)` y `phpunit (latest)` de GitHub Actions con la rama al día; sin force-push ni borrado; bypass del rol admin en modo `pull_request`), subirlo a la PR y verificar que es JSON válido y que los nombres de los checks coinciden exactamente con los que muestra `gh pr checks`
+- [x] 5.1 Crear `.github/rulesets/main.json` (rama por defecto; PR obligatoria con 0 aprobaciones; checks `js`, `phpcs`, `phpunit (minimum)` y `phpunit (latest)` de GitHub Actions con la rama al día; sin force-push ni borrado; bypass del rol admin en modo `pull_request`), subirlo a la PR y verificar que es JSON válido y que los nombres de los checks coinciden exactamente con los que muestra `gh pr checks`
 - [ ] 5.2 Aplicar el ruleset con `gh api` y verificar con `gh api repos/arinspunk/atproto-comments-plugin/rules/branches/main` que `main` tiene las reglas, y con `gh pr view --json mergeStateStatus` que la PR solo se puede fusionar con los cuatro checks en verde
 - [ ] 5.3 Fusionar la PR con la CI en verde y verificar que `main` contiene el merge y que la CI se ejecuta también en el push resultante a `main`
 
