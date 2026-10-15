@@ -16,7 +16,6 @@ Puede prepararse en paralelo, pero la primera subida debería esperar a que `plu
   - lo despliega en el SVN de WordPress.org (`10up/action-wordpress-plugin-deploy` con los secrets `SVN_USERNAME`/`SVN_PASSWORD`).
 - Workflow separado para actualizar solo `readme.txt` y los assets de WordPress.org sin publicar una versión.
 - Assets de WordPress.org en `.wordpress-org/`: icono, banner y capturas del panel y del frontend.
-- CI en los pull requests: PHPCS, PHPUnit (PHP 7.4 y 8.3), tests JS, build y Plugin Check.
 - Guía en el README del repo (no en `readme.txt`) con el proceso de release y el primer envío manual a revisión. La primera versión se sube a mano por el formulario de WordPress.org; el SVN solo existe tras la aprobación.
 
 ## Capabilities
@@ -29,6 +28,6 @@ Este cambio no altera el comportamiento del plugin: es distribución y tooling. 
 
 ## Impact
 
-- `.github/workflows/` (CI y release), `.distignore` y `.wordpress-org/`.
+- `.github/workflows/` (release), `.distignore` y `.wordpress-org/`. La CI de pull requests (PHPCS, PHPUnit, tests JS, build y Plugin Check) ya existe desde `ci-checks`; el workflow de release puede reutilizarla como requisito previo.
 - Secrets del repo: `SVN_USERNAME` y `SVN_PASSWORD` de la cuenta de WordPress.org.
 - Proceso manual previo: envío a revisión en https://wordpress.org/plugins/developers/add/ y espera de aprobación del slug `atproto-comments`.

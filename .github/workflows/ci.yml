@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# Job names are required checks in .github/rulesets/main.json: rename both together.
+jobs:
+  js:
+    name: js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:js
+      - run: npm run test:js
+      - run: npm run build
+
+  phpcs:
+    name: phpcs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '7.4'
+          tools: composer:v2
+          coverage: none
+      - run: composer install --no-interaction --no-progress
+      - run: composer phpcs
+
+  phpunit:
+    name: phpunit (${{ matrix.env }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # minimum: .wp-env.json as is (WordPress 6.5, PHP 7.4).
+        # latest: latest WordPress release with PHP 8.3, through .wp-env.override.json.
+        env: [minimum, latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Use the latest WordPress and PHP 8.3
+        if: matrix.env == 'latest'
+        run: |
+          echo '{ "core": null, "phpVersion": "8.3" }' > .wp-env.override.json
+      - run: npx wp-env start
+      - run: npx wp-env run cli wp core version
+      - run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments composer install --no-interaction --no-progress
+      - run: npm run test:php
+      - run: npm run test:php:multisite
+      - name: Plugin Check
+        if: matrix.env == 'latest'
+        # wp plugin check exits 0 even when it reports errors: fail on any ERROR row.
+        run: |
+          set -o pipefail
+          npm run plugin-check | tee plugin-check.txt
+          if grep -qP '\tERROR\t' plugin-check.txt; then
+            echo "::error::Plugin Check reported errors."
+            exit 1
+          fi
