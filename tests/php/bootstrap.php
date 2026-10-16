@@ -27,3 +27,5 @@ tests_add_filter(
 );
 
 require $atproto_comments_tests_dir . '/includes/bootstrap.php';
+
+require __DIR__ . '/trait-network-mock.php';

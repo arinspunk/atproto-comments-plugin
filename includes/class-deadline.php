@@ -85,6 +85,19 @@ final class Deadline {
 	}
 
 	/**
+	 * Error returned instead of a request when too little time is left.
+	 *
+	 * @return \WP_Error
+	 */
+	public static function error() {
+		return new \WP_Error(
+			'atproto_comments_timeout',
+			__( 'There was not enough time left to contact the AT Protocol server. Try again.', 'atproto-comments' ),
+			array( 'status' => 502 )
+		);
+	}
+
+	/**
 	 * Current time from the clock.
 	 *
 	 * @return float
