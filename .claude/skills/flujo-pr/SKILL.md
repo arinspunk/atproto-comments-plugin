@@ -5,7 +5,7 @@ description: Flujo de ramas, pull requests y CI de este repo, con `main` protegi
 
 # Ramas, PR y CI
 
-`main` está protegida por un ruleset (`.github/rulesets/main.json`, id `25198336` en GitHub). Qué hace cada check, el ruleset y el bypass están en la sección "CI" y "Flujo de trabajo" del `README.md`; esta skill dice qué hacer en cada caso.
+`main` está protegida por un ruleset (`.github/rulesets/main.json`, id `25198336` en GitHub). Qué hace cada check, el ruleset y el bypass están en las secciones "CI" y "Workflow" del `README.md`; esta skill dice qué hacer en cada caso.
 
 ## Reglas que no se negocian
 

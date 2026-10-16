@@ -14,10 +14,11 @@ Show the replies to a Bluesky (AT Protocol) post as the comments of your posts.
 
 AT Protocol Comments turns a conversation on Bluesky, or any other AT Protocol app, into the comment section of a WordPress post.
 
-Publish your post, share it on Bluesky, and paste the link to that post in the editor. The replies appear under your post, threaded, with their authors and dates. Visitors reply from their own app; there is nothing to moderate in WordPress and no accounts to create.
+Publish your post and then publish its Bluesky post from the editor, with your own text and a card that links back to the entry. Or share it yourself and paste the link to that post. The replies appear under your post, threaded, with their authors and dates. Visitors reply from their own app; there is nothing to moderate in WordPress and no accounts to create.
 
+* Publish the anchor post from the block editor, when you decide, in the site's AT Protocol account (Bluesky or any other server).
+* Or paste an `at://` URI or the post URL from bsky.app, mu.social or any compatible app, with a handle or a DID.
 * Works with block and classic themes.
-* Paste an `at://` URI or the post URL from bsky.app, mu.social or any compatible app.
 * Replace the native comments, or show both, one after the other.
 * Choose the content types where it is active (posts by default).
 * Interface and dates in your site's language.
@@ -27,35 +28,83 @@ The comments are displayed by the [atproto-comments](https://github.com/arinspun
 
 == External services ==
 
-This plugin connects to an AT Protocol AppView to load the replies to the linked post. By default it uses the public AppView run by Bluesky Social PBC, `https://public.api.bsky.app`. You can change it in Settings → AT Protocol Comments.
+This plugin connects to AT Protocol services. The visitor's browser loads the replies; the WordPress server only makes requests when an editor publishes an anchor post, tests the account connection or saves a link with a handle.
+
+= AppView (visitor's browser) =
+
+The replies to the linked post are loaded from an AT Protocol AppView. By default it is the public AppView run by Bluesky Social PBC, `https://public.api.bsky.app`. You can change it in Settings → AT Protocol Comments.
 
 * **What is sent:** the `at://` URI of the linked post and the maximum reply depth. The request is made by the visitor's browser, so the AppView also receives the visitor's IP address and browser details, as with any web request.
-* **When:** every time a visitor opens a post that is linked to an AT Protocol post. Nothing is sent on other pages, and the WordPress server itself makes no requests.
-
-Bluesky's [Terms of Service](https://bsky.social/about/support/tos) and [Privacy Policy](https://bsky.social/about/support/privacy-policy) apply to the default AppView. If you configure another AppView, its own terms apply.
+* **When:** every time a visitor opens a post that is linked to an AT Protocol post. Nothing is sent on other pages.
 
 The comments show avatars served by the AppView's image CDN (for Bluesky, `cdn.bsky.app`), which the visitor's browser loads directly.
+
+= The account's server (PDS) =
+
+If you configure an AT Protocol account in the settings, the WordPress server connects to that account's Personal Data Server (PDS). The plugin does not hard-code any server: the PDS is the one the account's DID document declares, which can be one of Bluesky's servers or another provider's, such as Eurosky.
+
+* **What is sent:** to sign in, the account's DID and its app password. To publish, the post text you write, the creation date, the site language (for example `es`), and a card with the entry's permalink, title and excerpt (no excerpt for password-protected entries). If the entry has a featured image of 1 MB or less, the image file too.
+* **When:** only when an editor clicks "Publish to Bluesky" or an administrator clicks "Test connection". Publishing or updating an entry never contacts the PDS.
+
+= Identity resolution =
+
+To find an account's DID and PDS, the WordPress server uses the standard AT Protocol methods:
+
+* **The handle's domain:** a DNS lookup of `_atproto.<handle>` and a request to `https://<handle>/.well-known/atproto-did`. Only the handle is sent.
+* **The DID directory:** for `did:plc` accounts, `https://plc.directory/<did>`, run by Bluesky Social PBC; for `did:web` accounts, `https://<domain>/.well-known/did.json`. Only the DID is sent.
+* **When:** when publishing an anchor post, testing the connection, or saving a thread link that uses a handle instead of a DID (the result is cached for 10 minutes).
+
+Bluesky's [Terms of Service](https://bsky.social/about/support/tos) and [Privacy Policy](https://bsky.social/about/support/privacy-policy) apply to the default AppView, to `plc.directory` and to accounts hosted on Bluesky's servers. If you use another AppView or an account on another provider, its own terms apply.
 
 == Privacy ==
 
 When a visitor chooses the app they want to reply with, the choice is stored in their browser's `localStorage` under the key `atproto-preferred-app`, so it is remembered on their next visit. It is never sent to your site or to anyone else. The plugin sets no cookies.
 
-Consider mentioning the AppView and this `localStorage` entry in your site's privacy policy.
+The app password of the site's AT Protocol account is stored in the WordPress database, encrypted with a key derived from your site's security keys (`AUTH_KEY` and `AUTH_SALT`). It is never shown in the settings or sent to the browser, and it is deleted when you choose "Forget account" or uninstall the plugin. Use an app password, never the account's main password.
+
+Consider mentioning the AppView, the publishing of anchor posts and this `localStorage` entry in your site's privacy policy.
 
 == Installation ==
 
 1. Install and activate the plugin from Plugins → Add New, or upload the plugin folder to `/wp-content/plugins/`.
 2. Optionally, review Settings → AT Protocol Comments.
-3. Publish a post and share it on Bluesky or another AT Protocol app.
-4. Edit the post and paste the link to that Bluesky post in the "AT Protocol comments" panel (block editor) or box (classic editor). Save.
+3. To publish from the editor, add the site's AT Protocol account in Settings → AT Protocol Comments: its handle and an app password. Click "Test connection" to check it.
+4. Publish an entry. In the "AT Protocol comments" panel of the block editor, write the text of the post and click "Publish to Bluesky".
+5. Or share the entry yourself in any AT Protocol app, then paste the link to that post in the "AT Protocol comments" panel (block editor) or box (classic editor), and save.
 
 == Frequently Asked Questions ==
 
+= How do I create an app password? =
+
+An app password lets an app use your account without your main password, and you can revoke it at any time. In Bluesky, go to Settings → Privacy and security → App passwords, add one (for example "WordPress") and copy it into Settings → AT Protocol Comments. Other providers have a similar option. Don't give it access to direct messages: the plugin doesn't need it.
+
+= How do I publish the anchor post? =
+
+Publish the entry first and save any pending changes. Then, in the "AT Protocol comments" panel of the block editor, write the text of the post (up to 300 characters) and click "Publish to Bluesky". The post includes a card with the entry's link, title, excerpt and featured image, and the entry is linked to it automatically. Publishing or updating the entry never creates a post by itself. The classic editor can't publish; paste the link instead.
+
+= Who can publish? =
+
+Only users who can edit other people's posts, that is, Editors and Administrators, because the post goes out in the site's account, not the author's. Authors and Contributors can still paste a link. To change it, return another capability from the `atproto_comments_publish_capability` filter, for example in a small plugin:
+
+`add_filter( 'atproto_comments_publish_capability', function () { return 'publish_posts'; } );`
+
+With `publish_posts`, Authors can publish from their own entries; with `manage_options`, only Administrators can. The user also needs to be able to edit the entry.
+
 = Where do I get the link to the post? =
 
-Open the post in bsky.app, mu.social or another app and copy its URL. It must contain the DID of the account, which starts with `did:`, like `https://bsky.app/profile/did:plc:abc…/post/3k…`. You can also paste the `at://` URI, like `at://did:plc:abc…/app.bsky.feed.post/3k…`.
+Open the post in bsky.app, mu.social or another app and copy its URL, like `https://bsky.app/profile/alice.bsky.social/post/3k…`. You can also paste the `at://` URI, like `at://did:plc:abc…/app.bsky.feed.post/3k…`. Links with a handle are converted to the account's DID when you save. If the handle can't be resolved, paste the URL or the `at://` URI with the DID (`did:…`) instead.
 
-URLs with a handle (like `https://bsky.app/profile/alice.bsky.social/post/3k…`) are not accepted yet. Replace the handle with the account's DID, which you can look up at `https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=alice.bsky.social`.
+= The card has no image =
+
+The plugin uses the `medium_large` size of the featured image, or the original if there is no such size, and only if the file is 1 MB or less. It reads the file from your server, so there is no image if your media is stored elsewhere (for example, offloaded to S3 or a CDN). If the server is slow and there isn't enough time left, the post is published without image rather than failing.
+
+= It says it is not known whether the post was created =
+
+The connection with the account's server failed after the post was sent, or the request to your site timed out. The post may or may not exist. Open the account's profile in Bluesky or another app: if the post is there, copy its link and paste it in the thread link field; if it isn't, try again. Retrying without checking may create a duplicate.
+
+= My account's server is on a private network =
+
+For security, the WordPress server only connects to public addresses, so it can't reach a PDS, a handle domain or a `did:web` domain on a private or local network. A developer can allow a host with the WordPress `http_request_host_is_external` filter.
 
 = My theme doesn't show the comments =
 
@@ -71,9 +120,16 @@ Not directly. The "Comment" and "Reply" buttons open the conversation in the vis
 
 = What happens if I uninstall the plugin? =
 
-Its settings are deleted. The links stored in your posts are kept, so they are back if you install it again.
+Its settings and the AT Protocol account (handle and encrypted app password) are deleted. The links stored in your posts are kept, so they are back if you install it again. Posts published on AT Protocol are not deleted.
 
 == Changelog ==
+
+= Unreleased =
+* Publish the anchor post from the block editor, with a card linking to the entry and the site language.
+* Site AT Protocol account with an encrypted app password and a connection test.
+* Accounts on any AT Protocol server: the handle, DID and PDS are resolved, nothing is hard-coded.
+* Links with a handle are accepted and converted to the DID.
+* Only Editors and Administrators can publish, adjustable with the `atproto_comments_publish_capability` filter.
 
 = 0.1.0 =
 * First version: link posts to an AT Protocol post and show its replies as comments.

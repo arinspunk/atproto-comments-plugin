@@ -74,17 +74,22 @@
 		{
 			"name": "URL de app con handle",
 			"input": "https://bsky.app/profile/usoritual.com/post/3mwso7oovnp2u",
-			"expected": { "ok": false, "error": "handle" }
+			"expected": { "ok": false, "error": "handle", "handle": "usoritual.com", "rkey": "3mwso7oovnp2u" }
 		},
 		{
 			"name": "at:// con handle",
 			"input": "at://usoritual.com/app.bsky.feed.post/3mwso7oovnp2u",
-			"expected": { "ok": false, "error": "handle" }
+			"expected": { "ok": false, "error": "handle", "handle": "usoritual.com", "rkey": "3mwso7oovnp2u" }
 		},
 		{
 			"name": "URL de app con handle de bsky.social",
 			"input": "https://bsky.app/profile/someone.bsky.social/post/3mwso7oovnp2u",
-			"expected": { "ok": false, "error": "handle" }
+			"expected": { "ok": false, "error": "handle", "handle": "someone.bsky.social", "rkey": "3mwso7oovnp2u" }
+		},
+		{
+			"name": "URL de app con handle en mayúsculas",
+			"input": "https://bsky.app/profile/UsoRitual.COM/post/3MwsO7",
+			"expected": { "ok": false, "error": "handle", "handle": "usoritual.com", "rkey": "3MwsO7" }
 		},
 		{
 			"name": "Colección distinta",

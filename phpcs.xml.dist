@@ -24,6 +24,10 @@
 				<element value="atproto_comments"/>
 				<element value="AtprotoComments"/>
 			</property>
+			<!-- Base class of the anchor post tests, so its subclasses count as tests. -->
+			<property name="custom_test_classes" type="array">
+				<element value="Atproto_Comments_Publish_Test_Case"/>
+			</property>
 		</properties>
 	</rule>
 

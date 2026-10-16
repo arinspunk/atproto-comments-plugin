@@ -24,6 +24,14 @@ final class Plugin {
 		add_action( 'admin_menu', array( Settings::class, 'add_page' ) );
 		add_action( 'admin_init', array( Settings::class, 'add_fields' ) );
 
+		add_action( 'init', array( Account::class, 'register' ) );
+		add_action( 'add_option_' . Account::OPTION, array( Account::class, 'disable_autoload' ) );
+		add_action( 'admin_init', array( Account::class, 'add_fields' ) );
+		add_action( 'admin_enqueue_scripts', array( Account::class, 'enqueue_assets' ) );
+		add_action( 'rest_api_init', array( Account::class, 'register_routes' ) );
+		add_action( 'rest_api_init', array( Thread_Link::class, 'register_routes' ) );
+		add_action( 'rest_api_init', array( Anchor_Post::class, 'register_routes' ) );
+
 		add_action( 'init', array( Post_Meta::class, 'register' ), 99 );
 		add_action( 'add_meta_boxes', array( Post_Meta::class, 'add_metabox' ) );
 		add_action( 'admin_notices', array( Post_Meta::class, 'admin_notices' ) );
