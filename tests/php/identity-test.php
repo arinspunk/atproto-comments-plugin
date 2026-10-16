@@ -134,6 +134,73 @@ class Identity_Test extends WP_UnitTestCase {
 		$this->assertSame( 3.0, $this->request_to( self::WELL_KNOWN )['args']['timeout'] );
 	}
 
+	/**
+	 * Deadline on a simulated clock.
+	 *
+	 * @param float $seconds Budget.
+	 * @param float $now     Simulated time, by reference.
+	 * @return Deadline
+	 */
+	private static function deadline( $seconds, &$now ) {
+		return new Deadline(
+			$seconds,
+			static function () use ( &$now ) {
+				return $now;
+			}
+		);
+	}
+
+	public function test_with_deadline_https_goes_first() {
+		$now = 1000.0;
+		$this->mock_network(
+			array( self::WELL_KNOWN => self::response( 200, self::DID ) ),
+			array( '_atproto.usoritual.com' => array( 'did=' . self::OTHER_DID ) )
+		);
+
+		$this->assertSame( self::DID, Identity::resolve_handle( self::HANDLE, self::deadline( 25, $now ) ) );
+		$this->assertSame( array(), $this->dns_lookups );
+	}
+
+	public function test_with_deadline_dns_is_the_fallback() {
+		$now = 1000.0;
+		$this->mock_network(
+			array( self::WELL_KNOWN => self::response( 404 ) ),
+			array( '_atproto.usoritual.com' => array( 'did=' . self::DID ) )
+		);
+
+		$this->assertSame( self::DID, Identity::resolve_handle( self::HANDLE, self::deadline( 25, $now ) ) );
+		$this->assertSame( array( '_atproto.usoritual.com' ), $this->dns_lookups );
+	}
+
+	public function test_with_deadline_no_dns_without_enough_time() {
+		$now = 1000.0;
+		// The HTTPS request times out after 5 s: 20 s are not left.
+		$this->mock_network(
+			array(
+				self::WELL_KNOWN => static function () use ( &$now ) {
+					$now += 5.5;
+					return new WP_Error( 'http_request_failed', 'cURL error 28' );
+				},
+			),
+			array( '_atproto.usoritual.com' => array( 'did=' . self::DID ) )
+		);
+
+		$result = Identity::resolve_handle( self::HANDLE, self::deadline( 25, $now ) );
+
+		$this->assertSame( 'atproto_comments_handle_unresolved', $result->get_error_code() );
+		$this->assertSame( array(), $this->dns_lookups );
+	}
+
+	public function test_without_deadline_dns_goes_first() {
+		$this->mock_network(
+			array( self::WELL_KNOWN => self::response( 200, self::OTHER_DID ) ),
+			array( '_atproto.usoritual.com' => array( 'did=' . self::DID ) )
+		);
+
+		$this->assertSame( self::DID, Identity::resolve_handle( self::HANDLE ) );
+		$this->assertSame( array(), $this->requests );
+	}
+
 	public function test_expired_deadline_makes_no_request() {
 		$now = 1000.0;
 		$this->mock_network( array( self::WELL_KNOWN => self::response( 200, self::DID ) ) );

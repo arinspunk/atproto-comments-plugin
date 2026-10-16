@@ -43,19 +43,17 @@ class Anchor_Post_Publish_Test extends Atproto_Comments_Publish_Test_Case {
 	}
 
 	/**
-	 * Sum of the timeouts of all requests.
+	 * Latest moment, in seconds since the start, at which a request could
+	 * end: its sending time plus its timeout.
 	 *
 	 * @return float
 	 */
-	private function total_timeout() {
-		return array_sum(
-			array_map(
-				static function ( $request ) {
-					return (float) $request['args']['timeout'];
-				},
-				$this->requests
-			)
-		);
+	private function latest_possible_end() {
+		$end = 0.0;
+		foreach ( $this->requests as $request ) {
+			$end = max( $end, $request['at'] - 1000.0 + (float) $request['args']['timeout'] );
+		}
+		return $end;
 	}
 
 	// Record (design §9).
@@ -274,7 +272,7 @@ class Anchor_Post_Publish_Test extends Atproto_Comments_Publish_Test_Case {
 		$this->assertSame( 201, $this->publish( $post_id )->get_status() );
 		$this->assertFalse( $this->uploaded_blob() );
 		$this->assertArrayNotHasKey( 'thumb', $this->sent_record()['embed']['external'] );
-		$this->assertLessThanOrEqual( 25.0, $this->total_timeout() );
+		$this->assertLessThanOrEqual( 25.0, $this->latest_possible_end() );
 		$this->assertSame( 10.0, (float) $this->request_to( self::RECORD_URL )['args']['timeout'] );
 	}
 

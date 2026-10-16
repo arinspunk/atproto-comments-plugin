@@ -74,7 +74,7 @@ Nueva opción `atproto_comments_account` (sin autoload), con `identifier` (handl
 
 - Identificador vacío o no válido (no encaja con `Thread_Uri::HANDLE` ni con `Thread_Uri::DID`) → error y valor anterior.
 - Campo de contraseña vacío → se conserva la cifrada. Si trae valor, se recorta y se cifra.
-- Botón "Olvidar cuenta" (`name="atproto_comments_account[forget]"`, un submit del mismo formulario) → devuelve la opción vacía.
+- Botón "Olvidar cuenta" → devuelve la opción vacía. El botón está en la sección de cuenta, pero envía un formulario aparte, después del de ajustes (atributo `form`), con `settings_fields()` del mismo grupo y solo `atproto_comments_account[forget]`. Si fuera un submit del formulario de ajustes y apareciera antes de "Guardar cambios", pulsar Enter en cualquier campo lo activaría y borraría la cuenta. Ese formulario no envía `atproto_comments_settings`, así que su `sanitize_callback` recibe `null` y conserva los valores guardados.
 - El campo se pinta siempre vacío, con `autocomplete="new-password"` y la indicación "Hay una contraseña guardada".
 
 Al guardar no se hace ninguna petición a la red: la comprobación es el botón de prueba.
@@ -89,9 +89,11 @@ Alternativa descartada: añadir claves a `atproto_comments_settings`. Esa opció
 
 ### 4. Resolución de identidad
 
-`Identity::resolve_handle( $handle )`:
-1. DNS: `dns_get_record( '_atproto.' . $handle, DNS_TXT )`, si la función existe. Se usa el único registro `did=…` válido; si hay varios, se descarta.
-2. HTTPS: `wp_safe_remote_get( "https://{$handle}/.well-known/atproto-did" )`. La primera línea del cuerpo tiene que ser un DID válido.
+`Identity::resolve_handle( $handle, $deadline = null )` usa dos métodos:
+- DNS: `dns_get_record( '_atproto.' . $handle, DNS_TXT )`, si la función existe. Se usa el único registro `did=…` válido; si hay varios, se descarta.
+- HTTPS: `wp_safe_remote_get( "https://{$handle}/.well-known/atproto-did" )`. La primera línea del cuerpo tiene que ser un DID válido.
+
+Sin plazo (campo del vínculo), primero DNS y después HTTPS. Con plazo (publicación y prueba de conexión), primero HTTPS, que tiene timeout, y el DNS solo como respaldo si quedan al menos 20 s: `dns_get_record()` no admite timeout y una consulta lenta podría pasar del plazo global. Los handles alojados en un PDS (p. ej. `*.bsky.social`) y muchos de dominio propio publican el DID por HTTPS, así que en la práctica la publicación no consulta el DNS.
 
 `Identity::resolve_did( $did )`:
 - `did:plc` → `https://plc.directory/<did>`; `did:web` → `https://<dominio con %3A decodificado>/.well-known/did.json`.
@@ -158,7 +160,7 @@ Alternativas descartadas:
 - Un ajuste en la página de ajustes: es otro campo que validar para algo que casi nadie cambia.
 
 Orden:
-1. Validar: la entrada existe, el tipo está activo, `post_status === 'publish'`, el vínculo está vacío, la cuenta está configurada y se puede descifrar, y el texto tiene entre 1 y 300 grafemas y como mucho 3000 bytes UTF-8 (el otro límite del lexicon). Fallo → 400, o 409 si ya hay vínculo.
+1. Validar: la entrada existe, el tipo está activo, `post_status === 'publish'`, el vínculo está vacío, la cuenta está configurada y se puede descifrar, y el texto tiene entre 1 y 300 grafemas y como mucho 3000 bytes UTF-8 (el otro límite del lexicon). Fallo → 400, o 409 si ya hay vínculo, o 404 si la entrada no existe (a quien tiene `edit_posts`; al resto, el 403 del permiso).
 2. Tomar el lock (decisión 8) y volver a comprobar el vínculo dentro del lock.
 3. `resolve_account` → `createSession` → imagen (decisión 10) → `createRecord`, todo dentro del plazo global.
 4. Validar con `Thread_Uri::is_canonical()` la `uri` devuelta y guardarla con `update_post_meta`.
@@ -299,7 +301,7 @@ Alternativa descartada: aceptar handles en el meta y resolverlos en el `sanitize
 
 - [`AUTH_KEY` o `AUTH_SALT` rotadas (algunos hosts lo hacen tras un incidente)] → La cuenta pasa a no configurada, con un aviso claro en los ajustes. No hay pérdida de datos más allá de volver a escribir la contraseña.
 - [Quien lea la base de datos y `wp-config.php` puede descifrar la contraseña] → Es inevitable si el servidor tiene que usarla. Se mitiga recomendando una app password (revocable sin cambiar la contraseña principal) y lo dice la sección de ajustes.
-- [`dns_get_record` desactivada o lenta en algunos hosts, sin timeout configurable] → El método HTTPS sirve de alternativa. Un handle con dominio propio que solo publique DNS fallará en ese host, con un mensaje que sugiere usar el DID.
+- [`dns_get_record` desactivada o lenta en algunos hosts, sin timeout configurable] → El método HTTPS sirve de alternativa, y con plazo va primero; el DNS solo se consulta si quedan 20 s. Queda un caso residual: un handle que solo publique DNS, en un host cuyo resolutor tarde más de unos 20 s, puede pasar del plazo de 25 s. Un handle con dominio propio que solo publique DNS fallará en un host sin `dns_get_record`, con un mensaje que sugiere usar el DID.
 - [Respuesta ambigua de `createRecord`: post creado pero no vinculado] → Mensaje específico que pide revisar el perfil y pegar el enlace. Un reintento ciego crearía un duplicado; el lock solo evita los envíos simultáneos.
 - [El vínculo se guarda con `update_post_meta` fuera del guardado de la entrada; si el editor guarda después con un estado antiguo del meta, podría borrarlo] → El panel actualiza el registro en el store tras el 201, así que el siguiente guardado envía el valor nuevo. Se comprueba a mano en las dos versiones.
 - [`wp_safe_remote_*` rechaza también un PDS autoalojado en una red privada (p. ej. pruebas locales)] → Se acepta en la v1. Si hace falta, el filtro estándar `http_request_host_is_external` de WordPress permite autorizar un host.

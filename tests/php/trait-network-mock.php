@@ -12,7 +12,8 @@
 trait Atproto_Comments_Network_Mock {
 
 	/**
-	 * Requests made: each with `url` and `args`.
+	 * Requests made: each with `url`, `args` and `at` (the simulated time
+	 * `$this->now` when it was sent, if the test has one).
 	 *
 	 * @var array
 	 */
@@ -41,6 +42,7 @@ trait Atproto_Comments_Network_Mock {
 				$this->requests[] = array(
 					'url'  => $url,
 					'args' => $args,
+					'at'   => isset( $this->now ) ? $this->now : null,
 				);
 				if ( ! array_key_exists( $url, $http ) ) {
 					return new WP_Error( 'http_request_failed', 'Unexpected request to ' . $url );

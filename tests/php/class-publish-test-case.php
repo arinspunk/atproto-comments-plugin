@@ -93,6 +93,7 @@ abstract class Atproto_Comments_Publish_Test_Case extends WP_UnitTestCase {
 		$this->mock_network(
 			array_merge(
 				array(
+					'https://usoritual.com/.well-known/atproto-did' => self::response( 200, self::DID ),
 					'https://plc.directory/' . self::DID => self::response( 200, self::did_document( self::DID, 'https://pds.eurosky.social', array( 'usoritual.com' ) ) ),
 					self::SESSION_URL                    => self::response(
 						200,

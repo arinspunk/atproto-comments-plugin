@@ -28,8 +28,18 @@ final class Identity {
 	const MAX_RESPONSE_BYTES = 65536;
 
 	/**
-	 * Resolves a handle to its DID, first with the `_atproto` DNS TXT record
-	 * and then with `https://<handle>/.well-known/atproto-did`.
+	 * With a deadline, the DNS fallback only runs if this many seconds are
+	 * left, so that a slow lookup still leaves time for the rest.
+	 */
+	const DNS_MIN_TIME = 20;
+
+	/**
+	 * Resolves a handle to its DID with the `_atproto` DNS TXT record and
+	 * `https://<handle>/.well-known/atproto-did`.
+	 *
+	 * Without a deadline, DNS goes first. With one, HTTPS goes first, because
+	 * dns_get_record() has no timeout: DNS is only a fallback, and only while
+	 * DNS_MIN_TIME seconds are left.
 	 *
 	 * @param string        $handle   Handle.
 	 * @param Deadline|null $deadline Global deadline, if any.
@@ -40,28 +50,47 @@ final class Identity {
 		if ( ! self::is_handle( $handle ) ) {
 			return self::error_handle_unresolved();
 		}
-
 		if ( $deadline && ! $deadline->has( Deadline::MIN_REQUEST ) ) {
 			return Deadline::error();
 		}
-		$did = self::did_from_dns( $handle );
-		if ( null !== $did ) {
-			return $did;
-		}
 
-		if ( $deadline && ! $deadline->has( Deadline::MIN_REQUEST ) ) {
-			return Deadline::error();
-		}
-		$body = self::get( 'https://' . $handle . '/.well-known/atproto-did', $deadline );
-		if ( is_string( $body ) ) {
-			$lines = preg_split( '/\r?\n/', $body, 2 );
-			$did   = trim( $lines[0] );
-			if ( self::is_did( $did ) ) {
-				return $did;
+		if ( ! $deadline ) {
+			$did = self::did_from_dns( $handle );
+			if ( null === $did ) {
+				$did = self::did_from_https( $handle, null );
+			}
+		} else {
+			$did = self::did_from_https( $handle, $deadline );
+			if ( null === $did && $deadline->has( self::DNS_MIN_TIME ) ) {
+				$did = self::did_from_dns( $handle );
 			}
 		}
 
-		return self::error_handle_unresolved();
+		if ( null !== $did ) {
+			return $did;
+		}
+		return $deadline && ! $deadline->has( Deadline::MIN_REQUEST ) ? Deadline::error() : self::error_handle_unresolved();
+	}
+
+	/**
+	 * DID from `https://<handle>/.well-known/atproto-did`: the first line of
+	 * the body.
+	 *
+	 * @param string        $handle   Handle.
+	 * @param Deadline|null $deadline Global deadline, if any.
+	 * @return string|null
+	 */
+	private static function did_from_https( $handle, $deadline ) {
+		if ( $deadline && ! $deadline->has( Deadline::MIN_REQUEST ) ) {
+			return null;
+		}
+		$body = self::get( 'https://' . $handle . '/.well-known/atproto-did', $deadline );
+		if ( ! is_string( $body ) ) {
+			return null;
+		}
+		$lines = preg_split( '/\r?\n/', $body, 2 );
+		$did   = trim( $lines[0] );
+		return self::is_did( $did ) ? $did : null;
 	}
 
 	/**
