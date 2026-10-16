@@ -32,6 +32,14 @@ La app password SHALL guardarse cifrada en la base de datos con una clave deriva
 - **WHEN** el administrador abre los ajustes con una app password guardada
 - **THEN** el campo aparece vacío, con una indicación de que hay una contraseña guardada
 
+#### Scenario: Credenciales fuera de la carga automática
+- **WHEN** el administrador guarda la cuenta por primera vez
+- **THEN** la opción de la cuenta queda marcada para no cargarse automáticamente en cada petición
+
+#### Scenario: Servidor sin la extensión sodium
+- **WHEN** el servidor no tiene cargada la extensión `sodium` de PHP y el administrador guarda la cuenta y prueba la conexión
+- **THEN** la contraseña se cifra y se usa igual, sin errores
+
 ### Requirement: Conservación y borrado de la app password
 Guardar los ajustes con el campo de app password vacío SHALL conservar la contraseña guardada. El administrador SHALL poder olvidar la cuenta, lo que borra el identificador y la contraseña.
 

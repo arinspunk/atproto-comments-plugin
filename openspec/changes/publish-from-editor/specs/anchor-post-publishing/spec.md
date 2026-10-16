@@ -17,6 +17,21 @@ En los tipos de contenido activos, el panel lateral del editor de bloques SHALL 
 - **WHEN** el texto supera los 300 grafemas
 - **THEN** el contador lo indica y el botón queda deshabilitado
 
+### Requirement: Permiso para publicar
+Solo los usuarios que pueden editar la entrada (`edit_post`) y además tienen la capacidad de publicación SHALL poder publicar el post ancla. La capacidad de publicación SHALL ser por defecto `edit_others_posts` (Editores y Administradores) y SHALL poder cambiarse con el filtro `atproto_comments_publish_capability`. El editor de bloques y el endpoint SHALL aplicar la misma comprobación.
+
+#### Scenario: Autor en su propia entrada
+- **WHEN** un usuario con rol Autor abre una entrada suya publicada y sin vínculo
+- **THEN** el panel no muestra el formulario de publicación, indica que solo los editores pueden publicar en la cuenta del sitio, y el campo del vínculo sigue disponible
+
+#### Scenario: Editor
+- **WHEN** un usuario con rol Editor abre una entrada publicada de otro autor y sin vínculo
+- **THEN** el panel muestra el formulario de publicación
+
+#### Scenario: Filtro que abre el permiso
+- **WHEN** el sitio devuelve `publish_posts` en `atproto_comments_publish_capability` y un Autor publica desde su propia entrada
+- **THEN** el post se crea y la entrada queda vinculada
+
 ### Requirement: Precondiciones del botón
 El botón SHALL estar habilitado solo si la entrada está publicada (estado `publish`) y guardada, no tiene vínculo, la cuenta del sitio está configurada y el texto tiene entre 1 y 300 grafemas. Si no lo está, el panel SHALL indicar el motivo.
 
@@ -44,18 +59,22 @@ El post ancla SHALL crearse solo cuando el editor pulsa el botón. Publicar o ac
 - **THEN** no se hace ninguna llamada al PDS y la entrada sigue sin vínculo
 
 ### Requirement: Endpoint de publicación
-La publicación SHALL hacerse por un endpoint REST del plugin que recibe solo el ID de la entrada y el texto. Todo lo demás (URL, título, extracto, imagen, cuenta) SHALL obtenerlo el servidor. El endpoint SHALL exigir `edit_post` sobre la entrada y un nonce REST válido.
+La publicación SHALL hacerse por un endpoint REST del plugin que recibe solo el ID de la entrada y el texto. Todo lo demás (URL, título, extracto, imagen, idioma, cuenta) SHALL obtenerlo el servidor. El endpoint SHALL exigir el permiso para publicar y un nonce REST válido.
 
 #### Scenario: Usuario sin permiso
 - **WHEN** un usuario sin `edit_post` sobre la entrada llama al endpoint
 - **THEN** recibe un error 403 y no se crea ningún post
+
+#### Scenario: Autor sin la capacidad de publicación
+- **WHEN** un Autor llama al endpoint para su propia entrada sin que el filtro haya cambiado la capacidad
+- **THEN** recibe un error 403 y no se contacta con el PDS
 
 #### Scenario: Petición sin nonce
 - **WHEN** se llama al endpoint con cookie de sesión pero sin nonce REST
 - **THEN** la petición se rechaza y no se crea ningún post
 
 ### Requirement: Validación en el servidor
-El endpoint SHALL repetir las precondiciones: la entrada existe, es de un tipo activo, está publicada, no tiene vínculo, la cuenta está configurada y el texto tiene entre 1 y 300 grafemas. Si alguna falla SHALL responder con un error y un mensaje traducido sin llamar al PDS.
+El endpoint SHALL repetir las precondiciones: la entrada existe, es de un tipo activo, está publicada, no tiene vínculo, la cuenta está configurada y el texto tiene entre 1 y 300 grafemas y como mucho 3000 bytes en UTF-8. Si alguna falla SHALL responder con un error y un mensaje traducido sin llamar al PDS.
 
 #### Scenario: Entrada no publicada
 - **WHEN** se llama al endpoint con una entrada en borrador
@@ -64,6 +83,10 @@ El endpoint SHALL repetir las precondiciones: la entrada existe, es de un tipo a
 #### Scenario: Texto de 301 grafemas
 - **WHEN** se llama al endpoint con un texto de 301 grafemas
 - **THEN** responde con un error 400 y no contacta con el PDS
+
+#### Scenario: Emoji compuesto
+- **WHEN** se llama al endpoint con un texto de 300 grafemas en el que uno es el emoji `👩‍💻` (varios puntos de código unidos con ZWJ)
+- **THEN** el servidor lo cuenta como 300 grafemas y acepta el texto
 
 ### Requirement: Protección contra doble envío
 Una entrada SHALL tener como máximo un post ancla creado por el plugin. Si la entrada ya está vinculada, el endpoint SHALL responder con un error 409. Dos peticiones simultáneas para la misma entrada SHALL crear como máximo un post.
@@ -77,11 +100,15 @@ Una entrada SHALL tener como máximo un post ancla creado por el plugin. Si la e
 - **THEN** solo una crea el post y la otra recibe un error
 
 ### Requirement: Contenido del post
-El post SHALL ser un `app.bsky.feed.post` con el texto del editor tal cual, como texto plano, y la fecha de creación actual. Los enlaces, menciones y hashtags del texto no SHALL convertirse en facets en esta versión.
+El post SHALL ser un `app.bsky.feed.post` con el texto del editor tal cual, como texto plano, la fecha de creación actual y el idioma principal del sitio en `langs`. Los enlaces, menciones y hashtags del texto no SHALL convertirse en facets en esta versión.
 
 #### Scenario: Texto con hashtag
 - **WHEN** el editor publica el texto `Nueva entrada #wordpress`
 - **THEN** el post contiene ese texto sin facets y el hashtag no es un enlace
+
+#### Scenario: Idioma del post
+- **WHEN** el idioma del sitio es `gl_ES` y el editor publica el post
+- **THEN** el post tiene `langs` igual a `["gl"]`
 
 ### Requirement: Tarjeta enlazada
 El post SHALL incluir una tarjeta externa con la URL permanente de la entrada, su título y su extracto, como texto plano sin HTML. En una entrada protegida con contraseña, la tarjeta no SHALL incluir el extracto.
@@ -122,3 +149,21 @@ Si falla la resolución de la cuenta, la sesión o la creación del post, el end
 #### Scenario: Límite de peticiones
 - **WHEN** el PDS responde con un error 429
 - **THEN** el panel muestra un mensaje que indica que se vuelva a intentar más tarde
+
+### Requirement: Resultado incierto
+Si no se puede saber si el post llegó a crearse, el panel SHALL decir que se compruebe el perfil antes de reintentar y que, si el post existe, se pegue su enlace en el campo del vínculo. Esto SHALL ocurrir cuando la creación del post agota el tiempo o pierde la conexión después de enviarse, y también cuando la llamada al endpoint falla sin una respuesta del plugin (error 500, 502 o 504, o fallo de red).
+
+#### Scenario: Tiempo agotado al crear el post
+- **WHEN** la petición de creación del post al PDS agota el tiempo de espera
+- **THEN** el vínculo no cambia y el panel muestra el mensaje de resultado incierto, conservando el texto
+
+#### Scenario: Corte del servidor
+- **WHEN** la llamada al endpoint termina con un error 504 de un proxy, sin respuesta JSON del plugin
+- **THEN** el panel muestra el mensaje de resultado incierto, no un error genérico
+
+### Requirement: Tiempo máximo de la publicación
+El endpoint SHALL terminar en como mucho 25 segundos, sumando todas sus llamadas de red. Si no queda tiempo para subir la imagen, el post SHALL publicarse sin imagen. Si no queda tiempo para crear el post, SHALL responder con un error traducido sin crearlo.
+
+#### Scenario: Resolución de identidad lenta
+- **WHEN** la resolución de la cuenta y la sesión tardan 15 segundos en total
+- **THEN** el post se publica sin imagen y la respuesta llega antes de 25 segundos

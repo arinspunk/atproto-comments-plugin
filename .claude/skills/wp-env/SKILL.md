@@ -30,7 +30,8 @@ Parar: `npx wp-env stop` (conserva los datos). Borrar todo: `npx wp-env destroy`
 - **Actual**: crea `.wp-env.override.json` (no versionado) con `{ "core": null, "phpVersion": "8.3" }`.
 - Para cambiar: crear o borrar el override y ejecutar `npx wp-env start --update`.
 - Tras subir de versión, ejecuta `npx wp-env run cli wp core update-db`. Si no, el admin redirige a la pantalla de actualizar la base de datos y los scripts del navegador se quedan esperando.
-- Comprueba la combinación con `npx wp-env run cli wp core version` y `npx wp-env run cli php -v`.
+- Comprueba la combinación con `npx wp-env run cli wp core version` y `npx wp-env run cli php -v`. Que exista el override no significa que esté aplicado: sin `start --update` el entorno sigue con la versión anterior.
+- Tras bajar a WP 6.5 con una base de datos que ya ha usado WP 6.8+, el login falla y aparece `Deprecated: crypt(): Supplied salt is not valid for DES` en `class-phpass.php`. WP 6.8+ guarda la contraseña en un formato que 6.5 no sabe leer. Solución: `npx wp-env run cli wp user update admin --user_pass=password`. Hay que repetirlo cada vez que se baja de versión.
 
 ## Comandos habituales
 
