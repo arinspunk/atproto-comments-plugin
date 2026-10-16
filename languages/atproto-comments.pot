@@ -9,137 +9,147 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-16T16:46:51+00:00\n"
+"POT-Creation-Date: 2026-10-16T19:53:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: atproto-comments\n"
 
 #. Plugin Name of the plugin
-#: atproto-comments.php
 #: includes/class-settings.php:192
 #: includes/class-settings.php:193
 msgid "AT Protocol Comments"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: atproto-comments.php
 msgid "https://github.com/arinspunk/atproto-comments-plugin"
 msgstr ""
 
 #. Description of the plugin
-#: atproto-comments.php
 msgid "Shows replies to an AT Protocol (Bluesky) post as the comments of a post."
 msgstr ""
 
 #. Author of the plugin
-#: atproto-comments.php
 msgid "Xúlio Zé"
 msgstr ""
 
 #. Author URI of the plugin
-#: atproto-comments.php
 msgid "https://xulioze.com/"
 msgstr ""
 
-#: includes/class-account.php:151
+#: includes/class-account.php:173
 msgid "The AT Protocol account must be a handle (like example.bsky.social) or a DID (did:…). The saved account has not changed."
 msgstr ""
 
-#: includes/class-account.php:213
+#: includes/class-account.php:246
 msgid "AT Protocol account"
 msgstr ""
 
-#: includes/class-account.php:219
+#: includes/class-account.php:252
 msgid "Handle or DID"
 msgstr ""
 
-#: includes/class-account.php:227
+#: includes/class-account.php:260
 msgid "App password"
 msgstr ""
 
-#: includes/class-account.php:235
+#: includes/class-account.php:268
 msgid "Connection"
 msgstr ""
 
-#: includes/class-account.php:248
+#: includes/class-account.php:281
 msgid "Account used to publish the anchor post of an entry from the editor. There is one account for the whole site."
 msgstr ""
 
-#: includes/class-account.php:251
+#: includes/class-account.php:284
 msgid "Use an app password, not the account's main password. An app password can only be used by apps like this one and can be revoked at any time without changing the main password. In Bluesky, create one in Settings → Privacy and security → App passwords."
 msgstr ""
 
 #. translators: %s: name of the filter, atproto_comments_publish_capability.
-#: includes/class-account.php:257
-#, php-format
+#: includes/class-account.php:290
 msgid "Only editors and administrators can publish to the site account. Developers can change this with the %s filter."
 msgstr ""
 
-#: includes/class-account.php:266
+#: includes/class-account.php:299
 msgid "The saved app password can no longer be decrypted, probably because the site's security keys changed. Enter the app password again."
 msgstr ""
 
-#: includes/class-account.php:285
+#: includes/class-account.php:318
 msgid "The account handle without @, or its DID."
 msgstr ""
 
-#: includes/class-account.php:305
+#: includes/class-account.php:338
 msgid "An app password is saved. Leave the field empty to keep it."
 msgstr ""
 
-#: includes/class-account.php:307
+#: includes/class-account.php:340
 msgid "No app password is saved."
 msgstr ""
 
-#: includes/class-account.php:314
+#: includes/class-account.php:347
 msgid "Forget account"
 msgstr ""
 
-#: includes/class-account.php:327
+#: includes/class-account.php:360
 msgid "Test connection"
 msgstr ""
 
-#: includes/class-account.php:329
+#: includes/class-account.php:362
 msgid "Checks the saved account: resolves it and signs in to its server."
 msgstr ""
 
-#: includes/class-account.php:431
+#: includes/class-account.php:465
 msgid "The site has no AT Protocol account configured. Save the handle and an app password in the plugin settings first."
 msgstr ""
 
-#: includes/class-anchor-post.php:114
-#: includes/class-anchor-post.php:168
-msgid "The entry does not exist."
-msgstr ""
-
-#: includes/class-anchor-post.php:137
-msgid "The anchor post of this entry is already being published. Wait a moment and reload the editor."
-msgstr ""
-
-#: includes/class-anchor-post.php:171
+#: includes/class-anchor-post.php:247
+#: includes/class-anchor-post.php:395
 msgid "AT Protocol comments are not enabled for this content type."
 msgstr ""
 
-#: includes/class-anchor-post.php:174
+#: includes/class-anchor-post.php:283
+msgid "The linked post does not belong to the site's AT Protocol account, so it cannot be deleted from here. You can unlink it."
+msgstr ""
+
+#: includes/class-anchor-post.php:351
+msgid "The post was not deleted: it is still on the AT Protocol server. Try again later."
+msgstr ""
+
+#: includes/class-anchor-post.php:398
 msgid "Publish the entry before publishing its anchor post."
 msgstr ""
 
-#: includes/class-anchor-post.php:185
-#: build/editor.js:1
+#: includes/class-anchor-post.php:409
+#: build/editor.js:2
 msgid "Write the text of the post."
 msgstr ""
 
 #. translators: %d: maximum number of characters, 300.
-#: includes/class-anchor-post.php:192
-#, php-format
+#: includes/class-anchor-post.php:416
 msgid "The text of the post is too long. The limit is %d characters."
 msgstr ""
 
-#: includes/class-anchor-post.php:470
-msgid "This entry is already linked to an AT Protocol post. Empty the link first to publish a new one."
+#: includes/class-anchor-post.php:693
+msgid "The entry does not exist."
 msgstr ""
 
-#: includes/class-anchor-post.php:483
+#: includes/class-anchor-post.php:705
+msgid "There is already an operation in progress with the post of this entry. Wait a moment and reload the editor."
+msgstr ""
+
+#: includes/class-anchor-post.php:716
+msgid "This entry is not linked to an AT Protocol post."
+msgstr ""
+
+#: includes/class-anchor-post.php:727
+#: build/editor.js:2
+msgid "It could not be confirmed that the post was deleted. Try again."
+msgstr ""
+
+#: includes/class-anchor-post.php:740
+msgid "This entry is already linked to an AT Protocol post. Unlink it first to publish a new one."
+msgstr ""
+
+#: includes/class-anchor-post.php:753
 msgid "It is not known whether the post was created. Check the account's profile before trying again; if the post is there, paste its link in the thread link field."
 msgstr ""
 
@@ -147,42 +157,42 @@ msgstr ""
 msgid "There was not enough time left to contact the AT Protocol server. Try again."
 msgstr ""
 
-#: includes/class-identity.php:104
+#: includes/class-identity.php:133
 msgid "The account's DID document does not declare an AT Protocol server (PDS)."
 msgstr ""
 
-#: includes/class-identity.php:168
+#: includes/class-identity.php:197
 msgid "The handle is not verified: its DID document does not declare it. Check the handle or use the DID."
 msgstr ""
 
-#: includes/class-identity.php:315
+#: includes/class-identity.php:344
 msgid "The handle does not exist or could not be resolved to a DID."
 msgstr ""
 
-#: includes/class-identity.php:328
+#: includes/class-identity.php:357
 msgid "The account's DID document could not be obtained or is not valid."
 msgstr ""
 
 #: includes/class-post-meta.php:74
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "AT Protocol comments"
 msgstr ""
 
 #: includes/class-post-meta.php:93
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "Thread link"
 msgstr ""
 
 #: includes/class-post-meta.php:101
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "Paste the URL of the post or its at:// URI. Leave empty to unlink."
 msgstr ""
 
-#: includes/class-post-meta.php:217
+#: includes/class-post-meta.php:246
 msgid "The handle in the AT Protocol link could not be resolved. Check it, or paste the post URL or the at:// URI with the DID (did:…). The previous link has been kept."
 msgstr ""
 
-#: includes/class-post-meta.php:219
+#: includes/class-post-meta.php:248
 msgid "The AT Protocol link is not valid. Paste the URL of a post, like https://bsky.app/profile/…/post/…, or its at:// URI. The previous link has been kept."
 msgstr ""
 
@@ -295,99 +305,176 @@ msgctxt "abbreviation of months"
 msgid "mo"
 msgstr ""
 
-#: includes/class-xrpc.php:180
+#: includes/class-xrpc.php:230
 msgid "The AT Protocol server did not respond. Try again later."
 msgstr ""
 
-#: includes/class-xrpc.php:183
+#: includes/class-xrpc.php:233
 msgid "The AT Protocol server rejected the credentials. Check the account in the settings."
 msgstr ""
 
-#: includes/class-xrpc.php:186
+#: includes/class-xrpc.php:236
 msgid "The account asks for a sign-in code. Use an app password instead of the main password."
 msgstr ""
 
-#: includes/class-xrpc.php:189
+#: includes/class-xrpc.php:239
 msgid "The AT Protocol account is suspended or deactivated."
 msgstr ""
 
-#: includes/class-xrpc.php:192
+#: includes/class-xrpc.php:242
 msgid "The AT Protocol server has received too many requests. Try again in a few minutes."
 msgstr ""
 
-#: includes/class-xrpc.php:196
+#: includes/class-xrpc.php:245
+msgid "The post does not exist on the AT Protocol server."
+msgstr ""
+
+#: includes/class-xrpc.php:249
 msgid "The AT Protocol server returned an unexpected response."
 msgstr ""
 
 #: build/editor.js:1
+msgid "The number of replies could not be checked. If the post has replies, they will no longer be shown in its thread or on this entry, but they will stay on the profiles of the people who wrote them."
+msgstr ""
+
+#: build/editor.js:1
+msgid "The post has no replies."
+msgstr ""
+
+#. translators: %d: approximate number of replies to the post.
+#: build/editor.js:2
+msgid "About %d reply will no longer be shown in the thread or on this entry. It will stay on the profile of the person who wrote it."
+msgid_plural "About %d replies will no longer be shown in the thread or on this entry. They will stay on the profiles of the people who wrote them."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/editor.js:2
+msgid "Delete the post from Bluesky?"
+msgstr ""
+
+#: build/editor.js:2
+msgid "The post will be deleted from the site’s AT Protocol account and the entry will be unlinked. This cannot be undone."
+msgstr ""
+
+#: build/editor.js:2
+msgid "Checking the number of replies…"
+msgstr ""
+
+#: build/editor.js:2
+msgid "Cancel"
+msgstr ""
+
+#: build/editor.js:2
+msgid "Delete the post"
+msgstr ""
+
+#: build/editor.js:2
+msgid "This entry is linked to the post:"
+msgstr ""
+
+#: build/editor.js:2
+msgid "Open the post"
+msgstr ""
+
+#: build/editor.js:2
+msgid "The entry is unlinked. The post and its replies are still on Bluesky."
+msgstr ""
+
+#: build/editor.js:2
+msgid "The entry could not be unlinked. Try again."
+msgstr ""
+
+#: build/editor.js:2
+msgid "Unlink"
+msgstr ""
+
+#: build/editor.js:2
+msgid "Delete from Bluesky"
+msgstr ""
+
+#: build/editor.js:2
+msgid "Unlinking does not delete the post or its replies."
+msgstr ""
+
+#: build/editor.js:2
+msgid "Test the connection in the settings to be able to delete from here."
+msgstr ""
+
+#: build/editor.js:2
+msgid "Open the settings"
+msgstr ""
+
+#: build/editor.js:2
+msgid "The post was deleted from Bluesky and the entry is unlinked."
+msgstr ""
+
+#: build/editor.js:2
 msgid "It is not known whether the post was created. Check the account’s profile before trying again; if the post is there, paste its link in the thread link field."
 msgstr ""
 
-#: build/editor.js:1
+#: build/editor.js:2
 msgid "Only editors can publish posts to the site’s AT Protocol account."
 msgstr ""
 
-#: build/editor.js:1
+#: build/editor.js:2
 msgid "This entry is already linked to a post. To publish a new one, empty the link and update the entry."
 msgstr ""
 
-#: build/editor.js:1
+#: build/editor.js:2
 msgid "Publish the entry before publishing its post."
 msgstr ""
 
-#: build/editor.js:1
+#: build/editor.js:2
 msgid "The entry has unsaved changes. Update it first."
 msgstr ""
 
 #. translators: %d: maximum number of characters, 300.
-#: build/editor.js:2
-#, js-format
+#: build/editor.js:3
 msgid "The text is too long. The limit is %d characters."
 msgstr ""
 
-#: build/editor.js:2
+#: build/editor.js:3
 msgid "The site has no AT Protocol account configured."
 msgstr ""
 
-#: build/editor.js:2
+#: build/editor.js:3
 msgid "Configure it in the settings."
 msgstr ""
 
-#: build/editor.js:2
+#: build/editor.js:3
 msgid "The site has no AT Protocol account configured. Ask an administrator to set it up."
 msgstr ""
 
-#: build/editor.js:2
+#: build/editor.js:3
 msgid "Post text"
 msgstr ""
 
 #. translators: 1: characters written, 2: limit, 300.
-#: build/editor.js:3
-#, js-format
+#: build/editor.js:4
 msgid "%1$d / %2$d characters"
 msgstr ""
 
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "The post was published and the entry is linked to it."
 msgstr ""
 
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "Publish to Bluesky"
 msgstr ""
 
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "Creates the post with a card that links to this entry. It can be seen in any AT Protocol app, such as Bluesky."
 msgstr ""
 
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "Resolving the handle…"
 msgstr ""
 
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "The handle in this link could not be resolved. Check it, or paste the post URL or the at:// URI with the DID (did:…)."
 msgstr ""
 
-#: build/editor.js:3
+#: build/editor.js:4
 msgid "This is not a valid AT Protocol post link. Paste the URL of a post, like https://bsky.app/profile/…/post/…, or its at:// URI."
 msgstr ""
 
@@ -405,19 +492,16 @@ msgstr ""
 
 #. translators: %s: account handle.
 #: build/settings.js:2
-#, js-format
 msgid "Handle: %s"
 msgstr ""
 
 #. translators: %s: account DID.
 #: build/settings.js:3
-#, js-format
 msgid "DID: %s"
 msgstr ""
 
 #. translators: %s: URL of the account's server (PDS).
 #: build/settings.js:4
-#, js-format
 msgid "Server: %s"
 msgstr ""
 

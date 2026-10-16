@@ -141,15 +141,44 @@ final class Post_Meta {
 	 * Data for the block editor panel. Never includes the account identifier
 	 * or the password.
 	 *
+	 * `accountDid` is the DID the account last resolved to ('' if never): it is
+	 * public, unlike the identifier and the password.
+	 *
 	 * @param \WP_Post $post Post being edited.
-	 * @return array{accountReady: bool, canPublish: bool, settingsUrl: string|null}
+	 * @return array{accountReady: bool, accountDid: string, canPublish: bool, canDelete: bool, settingsUrl: string|null, appview: string, postUrlTemplate: string}
 	 */
 	public static function editor_data( $post ) {
 		return array(
-			'accountReady' => Account::is_configured(),
-			'canPublish'   => Anchor_Post::user_can_publish( $post->ID ),
-			'settingsUrl'  => current_user_can( 'manage_options' ) ? admin_url( 'options-general.php?page=' . Settings::PAGE ) : null,
+			'accountReady'    => Account::is_configured(),
+			'accountDid'      => Account::get()['did'],
+			'canPublish'      => Anchor_Post::user_can_publish( $post->ID ),
+			'canDelete'       => Anchor_Post::user_can_delete( $post->ID ),
+			'settingsUrl'     => current_user_can( 'manage_options' ) ? admin_url( 'options-general.php?page=' . Settings::PAGE ) : null,
+			'appview'         => Settings::get()['appview'],
+			'postUrlTemplate' => self::post_url_template( $post ),
 		);
+	}
+
+	/**
+	 * URL template to open the linked post in an app, with `{did}` and
+	 * `{rkey}` placeholders.
+	 *
+	 * @param \WP_Post $post Post being edited.
+	 * @return string
+	 */
+	private static function post_url_template( $post ) {
+		$default = 'https://bsky.app/profile/{did}/post/{rkey}';
+
+		/**
+		 * URL template to open the linked post from the editor panel.
+		 *
+		 * @param string   $template https URL with `{did}` and `{rkey}`. Default
+		 *                           'https://bsky.app/profile/{did}/post/{rkey}'.
+		 * @param \WP_Post $post     Post being edited.
+		 */
+		$template = apply_filters( 'atproto_comments_post_url', $default, $post );
+
+		return is_string( $template ) && 1 === preg_match( '#^https://[^\s"<>]+$#', $template ) ? $template : $default;
 	}
 
 	/**

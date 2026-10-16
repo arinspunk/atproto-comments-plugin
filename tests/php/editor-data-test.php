@@ -7,6 +7,7 @@
 
 use AtprotoComments\Account;
 use AtprotoComments\Post_Meta;
+use AtprotoComments\Settings;
 
 /**
  * window.atprotoCommentsEditor.
@@ -44,9 +45,13 @@ class Editor_Data_Test extends WP_UnitTestCase {
 
 		$this->assertSame(
 			array(
-				'accountReady' => true,
-				'canPublish'   => true,
-				'settingsUrl'  => admin_url( 'options-general.php?page=atproto-comments' ),
+				'accountReady'    => true,
+				'accountDid'      => '',
+				'canPublish'      => true,
+				'canDelete'       => true,
+				'settingsUrl'     => admin_url( 'options-general.php?page=atproto-comments' ),
+				'appview'         => 'https://public.api.bsky.app',
+				'postUrlTemplate' => 'https://bsky.app/profile/{did}/post/{rkey}',
 			),
 			Post_Meta::editor_data( $this->post )
 		);
@@ -65,7 +70,63 @@ class Editor_Data_Test extends WP_UnitTestCase {
 		wp_set_current_user( $author );
 		$own = get_post( self::factory()->post->create( array( 'post_author' => $author ) ) );
 
-		$this->assertFalse( Post_Meta::editor_data( $own )['canPublish'] );
+		$data = Post_Meta::editor_data( $own );
+		$this->assertFalse( $data['canPublish'] );
+		$this->assertFalse( $data['canDelete'] );
+	}
+
+	public function test_editor_can_delete() {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+
+		$this->assertTrue( Post_Meta::editor_data( $this->post )['canDelete'] );
+	}
+
+	public function test_account_did_once_resolved() {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
+		$this->assertSame( '', Post_Meta::editor_data( $this->post )['accountDid'] );
+
+		Account::remember_did( 'did:plc:abc234567abcdefghijklmno' );
+
+		$this->assertSame( 'did:plc:abc234567abcdefghijklmno', Post_Meta::editor_data( $this->post )['accountDid'] );
+	}
+
+	public function test_appview_from_settings() {
+		update_option( Settings::OPTION, array( 'appview' => 'https://appview.example' ) );
+
+		$this->assertSame( 'https://appview.example', Post_Meta::editor_data( $this->post )['appview'] );
+	}
+
+	/**
+	 * Values of the post URL filter and the resulting template.
+	 *
+	 * @return array
+	 */
+	public function post_url_filters() {
+		return array(
+			'other app'  => array( 'https://app.example/profile/{did}/post/{rkey}', 'https://app.example/profile/{did}/post/{rkey}' ),
+			'http'       => array( 'http://app.example/{did}/{rkey}', 'https://bsky.app/profile/{did}/post/{rkey}' ),
+			'javascript' => array( 'javascript:alert(1)', 'https://bsky.app/profile/{did}/post/{rkey}' ),
+			'not string' => array( false, 'https://bsky.app/profile/{did}/post/{rkey}' ),
+		);
+	}
+
+	/**
+	 * The filter changes the template; invalid values fall back to bsky.app.
+	 *
+	 * @dataProvider post_url_filters
+	 *
+	 * @param mixed  $value    Filter result.
+	 * @param string $expected Template.
+	 */
+	public function test_post_url_filter( $value, $expected ) {
+		add_filter(
+			'atproto_comments_post_url',
+			static function () use ( $value ) {
+				return $value;
+			}
+		);
+
+		$this->assertSame( $expected, Post_Meta::editor_data( $this->post )['postUrlTemplate'] );
 	}
 
 	public function test_filter_changes_can_publish() {
@@ -100,7 +161,7 @@ class Editor_Data_Test extends WP_UnitTestCase {
 		Post_Meta::enqueue_editor_assets();
 		$before = implode( "\n", (array) wp_scripts()->get_data( 'atproto-comments-editor', 'before' ) );
 
-		$this->assertStringContainsString( 'window.atprotoCommentsEditor = {"accountReady":true,"canPublish":true,', $before );
+		$this->assertStringContainsString( 'window.atprotoCommentsEditor = {"accountReady":true,"accountDid":"","canPublish":true,"canDelete":true,', $before );
 		$this->assertStringNotContainsString( 'usoritual.com', $before );
 		$this->assertStringNotContainsString( self::PASSWORD, $before );
 		$this->assertStringNotContainsString( Account::get()['password'], $before );

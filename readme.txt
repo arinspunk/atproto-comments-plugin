@@ -18,6 +18,7 @@ Publish your post and then publish its Bluesky post from the editor, with your o
 
 * Publish the anchor post from the block editor, when you decide, in the site's AT Protocol account (Bluesky or any other server).
 * Or paste an `at://` URI or the post URL from bsky.app, mu.social or any compatible app, with a handle or a DID.
+* Unlink an entry at any time, or delete its anchor post from Bluesky when it belongs to the site account.
 * Works with block and classic themes.
 * Replace the native comments, or show both, one after the other.
 * Choose the content types where it is active (posts by default).
@@ -28,7 +29,7 @@ The comments are displayed by the [atproto-comments](https://github.com/arinspun
 
 == External services ==
 
-This plugin connects to AT Protocol services. The visitor's browser loads the replies; the WordPress server only makes requests when an editor publishes an anchor post, tests the account connection or saves a link with a handle.
+This plugin connects to AT Protocol services. The visitor's browser loads the replies; the WordPress server only makes requests when an editor publishes or deletes an anchor post, tests the account connection or saves a link with a handle.
 
 = AppView (visitor's browser) =
 
@@ -39,12 +40,14 @@ The replies to the linked post are loaded from an AT Protocol AppView. By defaul
 
 The comments show avatars served by the AppView's image CDN (for Bluesky, `cdn.bsky.app`), which the visitor's browser loads directly.
 
+The editor's browser also asks the same AppView for the number of replies of the linked post when an editor clicks "Delete from Bluesky", to show it in the confirmation. It sends the `at://` URI of the post, along with the editor's IP address and browser details.
+
 = The account's server (PDS) =
 
 If you configure an AT Protocol account in the settings, the WordPress server connects to that account's Personal Data Server (PDS). The plugin does not hard-code any server: the PDS is the one the account's DID document declares, which can be one of Bluesky's servers or another provider's, such as Eurosky.
 
-* **What is sent:** to sign in, the account's DID and its app password. To publish, the post text you write, the creation date, the site language (for example `es`), and a card with the entry's permalink, title and excerpt (no excerpt for password-protected entries). If the entry has a featured image of 1 MB or less, the image file too.
-* **When:** only when an editor clicks "Publish to Bluesky" or an administrator clicks "Test connection". Publishing or updating an entry never contacts the PDS.
+* **What is sent:** to sign in, the account's DID and its app password. To publish, the post text you write, the creation date, the site language (for example `es`), and a card with the entry's permalink, title and excerpt (no excerpt for password-protected entries). If the entry has a featured image of 1 MB or less, the image file too. To delete, the post's repository (the account's DID) and record key; if the server's answer is not clear, a public read of that same record confirms whether it is gone.
+* **When:** only when an editor clicks "Publish to Bluesky" or "Delete from Bluesky", or an administrator clicks "Test connection". Publishing, updating, trashing or deleting an entry never contacts the PDS.
 
 = Identity resolution =
 
@@ -52,7 +55,7 @@ To find an account's DID and PDS, the WordPress server uses the standard AT Prot
 
 * **The handle's domain:** a DNS lookup of `_atproto.<handle>` and a request to `https://<handle>/.well-known/atproto-did`. Only the handle is sent.
 * **The DID directory:** for `did:plc` accounts, `https://plc.directory/<did>`, run by Bluesky Social PBC; for `did:web` accounts, `https://<domain>/.well-known/did.json`. Only the DID is sent.
-* **When:** when publishing an anchor post, testing the connection, or saving a thread link that uses a handle instead of a DID (the result is cached for 10 minutes).
+* **When:** when publishing or deleting an anchor post, testing the connection, or saving a thread link that uses a handle instead of a DID (the result is cached for 10 minutes).
 
 Bluesky's [Terms of Service](https://bsky.social/about/support/tos) and [Privacy Policy](https://bsky.social/about/support/privacy-policy) apply to the default AppView, to `plc.directory` and to accounts hosted on Bluesky's servers. If you use another AppView or an account on another provider, its own terms apply.
 
@@ -98,6 +101,31 @@ Open the post in bsky.app, mu.social or another app and copy its URL, like `http
 
 The plugin uses the `medium_large` size of the featured image, or the original if there is no such size, and only if the file is 1 MB or less. It reads the file from your server, so there is no image if your media is stored elsewhere (for example, offloaded to S3 or a CDN). If the server is slow and there isn't enough time left, the post is published without image rather than failing.
 
+= How do I unlink an entry or delete its post? =
+
+When an entry is linked, the "AT Protocol comments" panel of the block editor shows the post and two actions:
+
+* **Unlink** removes the link from the entry, right away. The post and its replies stay on Bluesky; you can then paste another link or publish a new post. Anyone who can edit the entry can unlink it.
+* **Delete from Bluesky** deletes the post from the site account and then unlinks the entry. It asks for confirmation first and shows about how many replies the post has. It is only offered when the post belongs to the site account, to the same users who can publish (see "Who can publish?") and who can also delete the entry.
+
+In the classic editor, empty the thread link field and update the entry to unlink it; deleting the post is only available in the block editor.
+
+= What happens to the replies when I delete the post? =
+
+Replies are records in their authors' accounts, so they are not deleted. They are no longer shown in the post's thread or on your entry, but they stay on the profiles of the people who wrote them.
+
+= Does deleting or trashing the entry delete its post? =
+
+No. Trashing, restoring or permanently deleting an entry in WordPress never touches the post on Bluesky. Delete it from the panel first if you want it gone.
+
+= "Delete from Bluesky" is disabled =
+
+The site doesn't know the account's DID yet. It learns it the first time the account is resolved: when you test the connection in Settings → AT Protocol Comments or publish a post. Test the connection once and the button is enabled. This can happen after updating the plugin or changing the account's handle.
+
+= It says it could not be confirmed that the post was deleted =
+
+The account's server didn't answer in time, or the request to your site timed out. The entry stays linked. Trying again is safe: if the post was already deleted, the entry is simply unlinked.
+
 = It says it is not known whether the post was created =
 
 The connection with the account's server failed after the post was sent, or the request to your site timed out. The post may or may not exist. Open the account's profile in Bluesky or another app: if the post is there, copy its link and paste it in the thread link field; if it isn't, try again. Retrying without checking may create a duplicate.
@@ -130,6 +158,9 @@ Its settings and the AT Protocol account (handle and encrypted app password) are
 * Accounts on any AT Protocol server: the handle, DID and PDS are resolved, nothing is hard-coded.
 * Links with a handle are accepted and converted to the DID.
 * Only Editors and Administrators can publish, adjustable with the `atproto_comments_publish_capability` filter.
+* Unlink an entry from the block editor with one click, without touching the post.
+* Delete the anchor post from Bluesky when it belongs to the site account, with a confirmation that shows the number of replies.
+* The link to open the linked post can point to another app with the `atproto_comments_post_url` filter.
 
 = 0.1.0 =
 * First version: link posts to an AT Protocol post and show its replies as comments.

@@ -29,19 +29,21 @@ final class Account {
 	/**
 	 * Empty account.
 	 *
-	 * @return array{identifier: string, password: string}
+	 * @return array{identifier: string, password: string, did: string}
 	 */
 	public static function defaults() {
 		return array(
 			'identifier' => '',
 			'password'   => '',
+			'did'        => '',
 		);
 	}
 
 	/**
-	 * Stored account: identifier and encrypted password.
+	 * Stored account: identifier, encrypted password and the DID it last
+	 * resolved to ('' if it has never been resolved).
 	 *
-	 * @return array{identifier: string, password: string}
+	 * @return array{identifier: string, password: string, did: string}
 	 */
 	public static function get() {
 		$saved = get_option( self::OPTION, array() );
@@ -52,7 +54,24 @@ final class Account {
 		return array(
 			'identifier' => is_string( $account['identifier'] ) ? $account['identifier'] : '',
 			'password'   => is_string( $account['password'] ) ? $account['password'] : '',
+			'did'        => is_string( $account['did'] ) && Identity::is_did( $account['did'] ) ? $account['did'] : '',
 		);
+	}
+
+	/**
+	 * Saves the DID the account resolved to, so the editor knows it without
+	 * network requests. The save goes through sanitize(), which keeps the
+	 * identifier and the encrypted password.
+	 *
+	 * @param string $did Resolved DID.
+	 */
+	public static function remember_did( $did ) {
+		$account = self::get();
+		if ( ! Identity::is_did( $did ) || $did === $account['did'] || '' === $account['identifier'] ) {
+			return;
+		}
+		$account['did'] = $did;
+		update_option( self::OPTION, $account );
 	}
 
 	/**
@@ -120,13 +139,16 @@ final class Account {
 	 * - An invalid identifier adds an error and keeps the stored account.
 	 * - An empty `app_password` keeps the stored password; a new one is
 	 *   encrypted.
+	 * - `did` is kept while the identifier does not change (the submitted one
+	 *   if it is a valid DID, the stored one otherwise). A DID identifier is
+	 *   its own `did`; a new handle has none until it is resolved.
 	 *
 	 * On the first save WordPress runs this twice, the second time with the
 	 * already sanitized value, so a `password` that is already encrypted is
 	 * kept as it is.
 	 *
 	 * @param mixed $input Submitted value.
-	 * @return array{identifier: string, password: string}
+	 * @return array{identifier: string, password: string, did: string}
 	 */
 	public static function sanitize( $input ) {
 		$previous = self::get();
@@ -161,9 +183,20 @@ final class Account {
 		}
 		Crypto::wipe( $new );
 
+		if ( Identity::is_did( $identifier ) ) {
+			$did = $identifier;
+		} elseif ( $identifier !== $previous['identifier'] ) {
+			$did = '';
+		} elseif ( isset( $input['did'] ) && is_string( $input['did'] ) && Identity::is_did( $input['did'] ) ) {
+			$did = $input['did'];
+		} else {
+			$did = $previous['did'];
+		}
+
 		return array(
 			'identifier' => $identifier,
 			'password'   => $password,
+			'did'        => $did,
 		);
 	}
 
@@ -403,6 +436,7 @@ final class Account {
 		if ( is_wp_error( $account ) ) {
 			return $account;
 		}
+		self::remember_did( $account['did'] );
 
 		$password = Crypto::decrypt( self::get()['password'] );
 		$session  = Xrpc::create_session( $account['pds'], $account['did'], (string) $password, $deadline );

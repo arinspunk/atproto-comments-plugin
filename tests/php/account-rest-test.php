@@ -91,6 +91,7 @@ class Account_Rest_Test extends WP_UnitTestCase {
 			),
 			$response->get_data()
 		);
+		$this->assertSame( self::DID, Account::get()['did'] );
 		$body = json_decode( $this->request_to( self::SESSION_URL )['args']['body'], true );
 		$this->assertSame(
 			array(

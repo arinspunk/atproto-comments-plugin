@@ -16,6 +16,8 @@ class Account_Test extends WP_UnitTestCase {
 
 	const PASSWORD = 'abcd-efgh-ijkl-mnop';
 
+	const DID = 'did:plc:abc234567abcdefghijklmno';
+
 	/**
 	 * Start every test without an account or pending errors.
 	 */
@@ -72,6 +74,7 @@ class Account_Test extends WP_UnitTestCase {
 			array(
 				'identifier' => '',
 				'password'   => '',
+				'did'        => '',
 			),
 			Account::get()
 		);
@@ -252,10 +255,119 @@ class Account_Test extends WP_UnitTestCase {
 			array(
 				'identifier' => '',
 				'password'   => '',
+				'did'        => '',
 			),
 			Account::get()
 		);
 		$this->assertFalse( Account::is_configured() );
+	}
+
+	public function test_new_handle_has_no_did() {
+		$this->save_account();
+
+		$this->assertSame( '', Account::get()['did'] );
+	}
+
+	public function test_did_identifier_is_its_own_did() {
+		$this->save(
+			array(
+				'identifier'   => self::DID,
+				'app_password' => self::PASSWORD,
+			)
+		);
+
+		$this->assertSame( self::DID, Account::get()['did'] );
+	}
+
+	public function test_remember_did() {
+		$this->save_account();
+		$encrypted = Account::get()['password'];
+
+		Account::remember_did( self::DID );
+
+		$account = Account::get();
+		$this->assertSame( self::DID, $account['did'] );
+		$this->assertSame( 'usoritual.com', $account['identifier'] );
+		$this->assertSame( $encrypted, $account['password'] );
+		$this->assertContains( $this->autoload(), array( 'no', 'off' ) );
+	}
+
+	public function test_remember_did_ignores_invalid_values_and_missing_account() {
+		Account::remember_did( self::DID );
+		$this->assertFalse( get_option( Account::OPTION, false ) );
+
+		$this->save_account();
+		Account::remember_did( 'not a did' );
+		$this->assertSame( '', Account::get()['did'] );
+	}
+
+	/**
+	 * Settings form submissions that keep the identifier.
+	 *
+	 * @return array
+	 */
+	public function form_saves() {
+		return array(
+			'without new password' => array( '' ),
+			'with new password'    => array( 'qrst-uvwx-yzab-cdef' ),
+		);
+	}
+
+	/**
+	 * Saving the settings form without changing the identifier keeps the DID.
+	 *
+	 * @dataProvider form_saves
+	 *
+	 * @param string $password Submitted app password.
+	 */
+	public function test_form_save_keeps_did( $password ) {
+		$this->save_account();
+		Account::remember_did( self::DID );
+
+		$this->save(
+			array(
+				'identifier'   => 'usoritual.com',
+				'app_password' => $password,
+			)
+		);
+
+		$this->assertSame( self::DID, Account::get()['did'] );
+	}
+
+	public function test_changing_the_identifier_empties_the_did() {
+		$this->save_account();
+		Account::remember_did( self::DID );
+
+		$this->save(
+			array(
+				'identifier'   => 'other.example',
+				'app_password' => '',
+			)
+		);
+
+		$this->assertSame( '', Account::get()['did'] );
+	}
+
+	public function test_changing_to_a_did_identifier_uses_it() {
+		$this->save_account();
+		Account::remember_did( self::DID );
+
+		$this->save(
+			array(
+				'identifier'   => 'did:web:example.com',
+				'app_password' => '',
+			)
+		);
+
+		$this->assertSame( 'did:web:example.com', Account::get()['did'] );
+	}
+
+	public function test_forget_account_empties_the_did() {
+		$this->save_account();
+		Account::remember_did( self::DID );
+		$this->save( array( 'forget' => '1' ) );
+
+		$this->assertSame( '', Account::get()['did'] );
 	}
 
 	public function test_changed_auth_key_means_not_configured() {
