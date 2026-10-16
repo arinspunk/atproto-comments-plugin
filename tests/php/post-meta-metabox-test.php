@@ -12,6 +12,8 @@ use AtprotoComments\Post_Meta;
  */
 class Post_Meta_Metabox_Test extends WP_UnitTestCase {
 
+	use Atproto_Comments_Network_Mock;
+
 	const URI = 'at://did:plc:abc234567abcdefghijklmno/app.bsky.feed.post/3mwso7oovnp2u';
 
 	/**
@@ -73,10 +75,23 @@ class Post_Meta_Metabox_Test extends WP_UnitTestCase {
 		$this->assertSame( 'at://did:web:localhost%3A8080/app.bsky.feed.post/3mwso7oovnp2u', get_post_meta( $this->post_id, Post_Meta::KEY, true ) );
 	}
 
-	public function test_handle_keeps_previous_and_sets_notice() {
-		$this->submit( 'https://bsky.app/profile/usoritual.com/post/3mwso7oovnp2u' );
+	public function test_resolvable_handle_is_saved_with_did() {
+		$this->mock_network( array(), array( '_atproto.usoritual.com' => array( 'did=did:plc:zzz234567abcdefghijklmno' ) ) );
+
+		$this->submit( 'https://bsky.app/profile/usoritual.com/post/other' );
+
+		$this->assertSame( 'at://did:plc:zzz234567abcdefghijklmno/app.bsky.feed.post/other', get_post_meta( $this->post_id, Post_Meta::KEY, true ) );
+		$this->assertFalse( $this->notice() );
+	}
+
+	public function test_unresolved_handle_keeps_previous_and_sets_notice() {
+		$this->mock_network( array() );
+
+		$this->submit( 'https://bsky.app/profile/no-existe.example/post/3mwso7oovnp2u' );
+
 		$this->assertSame( self::URI, get_post_meta( $this->post_id, Post_Meta::KEY, true ) );
-		$this->assertSame( 'handle', $this->notice() );
+		$this->assertSame( 'handle_unresolved', $this->notice() );
+		$this->assertStringContainsString( 'could not be resolved', Post_Meta::error_message( 'handle_unresolved' ) );
 	}
 
 	public function test_invalid_keeps_previous_and_sets_notice() {

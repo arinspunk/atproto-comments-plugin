@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Normalizes an at:// URI or an app URL with a DID to the canonical at:// form.
+ * Handles are not resolved here: this class makes no network requests.
  */
 final class Thread_Uri {
 
@@ -37,9 +38,11 @@ final class Thread_Uri {
 	 * Normalizes a thread link.
 	 *
 	 * @param string $value Raw input.
-	 * @return array{ok: bool, uri?: string, error?: string} On success `uri` is
-	 *               the canonical at:// URI ('' unlinks); on failure `error` is
-	 *               'handle' or 'format'.
+	 * @return array{ok: bool, uri?: string, error?: string, handle?: string, rkey?: string}
+	 *               On success `uri` is the canonical at:// URI ('' unlinks); on
+	 *               failure `error` is 'handle' or 'format'. A 'handle' error
+	 *               also has the lowercase `handle` and the `rkey`, so the
+	 *               caller can resolve the handle and build the URI.
 	 */
 	public static function normalize( $value ) {
 		$value = trim( (string) $value );
@@ -64,8 +67,10 @@ final class Thread_Uri {
 				}
 				if ( 0 !== strpos( $authority, 'did:' ) && preg_match( '/^' . self::HANDLE . '\z/', $authority ) ) {
 					return array(
-						'ok'    => false,
-						'error' => 'handle',
+						'ok'     => false,
+						'error'  => 'handle',
+						'handle' => strtolower( $authority ),
+						'rkey'   => $rkey,
 					);
 				}
 			}

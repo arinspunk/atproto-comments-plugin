@@ -98,7 +98,7 @@ final class Post_Meta {
 				aria-describedby="atproto-comments-thread-uri-help" />
 		</p>
 		<p class="description" id="atproto-comments-thread-uri-help">
-			<?php esc_html_e( 'Paste the at:// URI of the post, or its URL with the DID (did:…). Leave empty to unlink.', 'atproto-comments' ); ?>
+			<?php esc_html_e( 'Paste the URL of the post or its at:// URI. Leave empty to unlink.', 'atproto-comments' ); ?>
 		</p>
 		<?php
 	}
@@ -151,7 +151,7 @@ final class Post_Meta {
 
 		// Thread_Uri::normalize() only accepts a strict character set. Not
 		// sanitize_text_field(): it strips the %3A of did:web ports.
-		$result = Thread_Uri::normalize( (string) wp_unslash( $_POST[ self::FIELD ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$result = Thread_Link::resolve( (string) wp_unslash( $_POST[ self::FIELD ] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( ! $result['ok'] ) {
 			set_transient( self::notice_key(), $result['error'], MINUTE_IN_SECONDS );
@@ -183,16 +183,16 @@ final class Post_Meta {
 	}
 
 	/**
-	 * Message for a normalization error.
+	 * Message for a link error.
 	 *
-	 * @param string $error 'handle' or 'format'.
+	 * @param string $error 'handle_unresolved' or 'format'.
 	 * @return string
 	 */
 	public static function error_message( $error ) {
-		if ( 'handle' === $error ) {
-			return __( 'The AT Protocol link uses a handle. Paste the at:// URI or the post URL with the DID (did:…) instead. The previous link has been kept.', 'atproto-comments' );
+		if ( 'handle_unresolved' === $error ) {
+			return __( 'The handle in the AT Protocol link could not be resolved. Check it, or paste the post URL or the at:// URI with the DID (did:…). The previous link has been kept.', 'atproto-comments' );
 		}
-		return __( 'The AT Protocol link is not valid. Paste an at:// URI of a post or a post URL with the DID, like https://bsky.app/profile/did:plc:…/post/…. The previous link has been kept.', 'atproto-comments' );
+		return __( 'The AT Protocol link is not valid. Paste the URL of a post, like https://bsky.app/profile/…/post/…, or its at:// URI. The previous link has been kept.', 'atproto-comments' );
 	}
 
 	/**

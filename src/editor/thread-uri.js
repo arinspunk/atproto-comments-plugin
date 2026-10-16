@@ -25,8 +25,9 @@ const TRIM_RE = /^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g;
  * Normalizes an at:// URI or an app URL with a DID to the canonical at:// form.
  *
  * @param {string} value Raw input.
- * @return {{ok: boolean, uri?: string, error?: 'handle'|'format'}} On success
- *         `uri` is the canonical at:// URI ('' unlinks).
+ * @return {{ok: boolean, uri?: string, error?: 'handle'|'format', handle?: string, rkey?: string}}
+ *         On success `uri` is the canonical at:// URI ('' unlinks). A 'handle'
+ *         error also has the lowercase `handle` and the `rkey`.
  */
 export function normalize( value ) {
 	const trimmed = String( value ?? '' ).replace( TRIM_RE, '' );
@@ -48,7 +49,12 @@ export function normalize( value ) {
 				! authority.startsWith( 'did:' ) &&
 				HANDLE_RE.test( authority )
 			) {
-				return { ok: false, error: 'handle' };
+				return {
+					ok: false,
+					error: 'handle',
+					handle: authority.toLowerCase(),
+					rkey,
+				};
 			}
 		}
 	}
