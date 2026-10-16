@@ -45,6 +45,7 @@ includes/
   class-account.php       opción de cuenta, sección de ajustes, ruta REST de prueba
   class-anchor-post.php   ruta REST de publicación, permiso, lock y construcción del registro
   class-thread-link.php   resolución de handles en el vínculo (envuelve Thread_Uri)
+  class-graphemes.php     recuento y recorte por grafemas (intl, \X comprobado o patrón propio)
 src/editor/
   index.js                ThreadPanel + PublishForm
   publish-form.js         formulario de publicación
@@ -173,7 +174,12 @@ El lock caduca a los 120 s, muy por encima del plazo, así que nunca caduca mien
 
 Alternativa descartada: subir los timeouts y confiar en `set_time_limit()`. Muchos hosts lo desactivan, y los proxies y PHP-FPM tienen sus propios límites (`request_terminate_timeout`).
 
-**Conteo de grafemas en PHP:** `preg_match_all( '/\X/u', … )`. `\X` (clústeres de grafemas extendidos de PCRE2) está disponible en PHP 7.3+ sin `ext-intl`. En JS se usa `Intl.Segmenter` y, si no existe, `Array.from( text ).length`, que cuenta de más y nunca deja pasar un texto que el servidor rechace.
+**Conteo de grafemas en PHP:** `Graphemes::count()` y `Graphemes::truncate()`, que usan el primer método fiable disponible:
+1. `grapheme_strlen()` / `grapheme_substr()` si está `ext-intl` (ICU, la misma segmentación que el PDS).
+2. `\X` de PCRE2, solo si pasa una autocomprobación (`😀😀` → 2, `👩‍💻👩‍💻` → 2, banderas, acento combinado). PCRE2 10.35 (PHP 7.4) y 10.42 (PHP 8.3) **juntan los emojis seguidos** en un solo clúster (`😀😀` → 1): contarían de menos y dejarían pasar un texto que el PDS rechaza.
+3. Si no, un patrón propio: carácter base más marcas, selectores de variación, modificadores de tono, etiquetas y emojis unidos por ZWJ; banderas por pares; CR LF. Puede contar de más en algún alfabeto (p. ej. jamo coreano suelto), pero nunca junta emojis distintos.
+
+El mismo cálculo recorta la descripción de la tarjeta. Los tests fuerzan cada método disponible y comparan con el recuento de ICU. En JS se usa `Intl.Segmenter` y, si no existe, `Array.from( text ).length`, que cuenta de más y nunca deja pasar un texto que el servidor rechace.
 
 **Respuesta ambigua:** si `createRecord` agota el tiempo o falla el transporte después de enviar la petición, el post puede haberse creado. En ese caso, el error (`atproto_comments_uncertain`, 502) dice que se compruebe el perfil antes de reintentar y que, si el post existe, se pegue su enlace. El panel muestra ese mismo mensaje cuando su propia llamada a la ruta falla sin una respuesta JSON del plugin (500, 502 o 504 de un proxy, error de red o corte de PHP), porque en ese caso tampoco sabe si el post llegó a crearse.
 
@@ -282,7 +288,7 @@ Alternativa descartada: aceptar handles en el meta y resolverlos en el `sanitize
 | `INSERT IGNORE` y `autoload = 'no'` (6.6 introduce `on`/`off`, pero sigue aceptando `no`) | sí | sí |
 | `atproto_comments_account` sin autoload tras el primer guardado (`no` en 6.5, `off` en 6.6+) | sí | sí |
 | Plazo global: ninguna petición pasa de 25 s en total (reloj simulado) | sí | sí |
-| `\X` cuenta un emoji con ZWJ (👩‍💻) como un grafema con la PCRE2 del host | sí | sí |
+| Grafemas: `Graphemes` con cada método disponible (intl, `\X` si es fiable, patrón propio) da el recuento de ICU, también con emojis seguidos | sí | sí |
 | Permiso: Autor rechazado, Editor aceptado, filtro que lo cambia | sí | sí |
 | Panel: selectores de `core/editor`, `receiveEntityRecords` sin marcar la entrada como modificada, estado del botón | manual | manual |
 | Tests JS (grafemas, fixtures del vínculo) | `wp-scripts test-unit-js`, sin depender de la versión | — |
@@ -300,7 +306,7 @@ Alternativa descartada: aceptar handles en el meta y resolverlos en el `sanitize
 - [Medios externos (offload a S3)] → La tarjeta sale sin imagen; se documenta en la FAQ.
 - [Host sin `ext-sodium`: `sodium_memzero()` de `sodium_compat` lanza una excepción] → `Crypto::wipe()` solo lo llama con la extensión cargada; hay un test con el polyfill forzado.
 - [`max_execution_time` o un proxy cortan la petición antes de que termine] → Plazo global de 25 s, imagen opcional según el tiempo restante, y el panel trata cualquier respuesta que no sea del plugin como resultado incierto.
-- [`\X` depende de la versión de PCRE2 del host: una versión antigua podría contar de más un emoji compuesto y rechazar un texto que el panel acepta] → Test con un emoji con ZWJ en las dos combinaciones. Si falla en algún host, el mensaje de error indica que el texto es demasiado largo y basta con recortarlo.
+- [`\X` depende de la versión de PCRE2 del host: 10.35 y 10.42 juntan los emojis seguidos y contarían de menos] → `Graphemes` usa `ext-intl` si está y `\X` solo si pasa una autocomprobación; si no, un patrón propio que puede contar de más en algún alfabeto. En ese caso el mensaje indica que el texto es demasiado largo y basta con recortarlo.
 - [Un sitio que quiera que los Autores publiquen] → Filtro `atproto_comments_publish_capability`, documentado en la FAQ.
 - [Cambios del lexicon de `app.bsky.feed.post` o `embed.external`] → Los campos que se usan son estables desde 2023. Los límites (300 grafemas, 3000 bytes, 1 MB) están en constantes de una sola clase.
 

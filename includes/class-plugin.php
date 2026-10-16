@@ -30,6 +30,7 @@ final class Plugin {
 		add_action( 'admin_enqueue_scripts', array( Account::class, 'enqueue_assets' ) );
 		add_action( 'rest_api_init', array( Account::class, 'register_routes' ) );
 		add_action( 'rest_api_init', array( Thread_Link::class, 'register_routes' ) );
+		add_action( 'rest_api_init', array( Anchor_Post::class, 'register_routes' ) );
 
 		add_action( 'init', array( Post_Meta::class, 'register' ), 99 );
 		add_action( 'add_meta_boxes', array( Post_Meta::class, 'add_metabox' ) );
