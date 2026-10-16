@@ -5,6 +5,7 @@
  * @package AtprotoComments
  */
 
+use AtprotoComments\Account;
 use AtprotoComments\Anchor_Post;
 use AtprotoComments\Display;
 use AtprotoComments\Graphemes;
@@ -68,6 +69,8 @@ class Anchor_Post_Publish_Test extends Atproto_Comments_Publish_Test_Case {
 		);
 
 		$this->assertSame( 201, $this->publish( $post_id, 'Nueva entrada' )->get_status() );
+
+		$this->assertSame( self::DID, Account::get()['did'] );
 
 		$body = json_decode( $this->request_to( self::RECORD_URL )['args']['body'], true );
 		$this->assertSame( self::DID, $body['repo'] );

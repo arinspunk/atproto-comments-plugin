@@ -17,6 +17,7 @@ import { Notice, Spinner, TextControl } from '@wordpress/components';
 import { PluginDocumentSettingPanel as EditorPanel } from '@wordpress/editor';
 import { PluginDocumentSettingPanel as LegacyPanel } from '@wordpress/edit-post';
 
+import LinkedState from './linked-state';
 import PublishForm from './publish-form';
 import { normalize } from './thread-uri';
 
@@ -37,7 +38,52 @@ function errorMessage( error ) {
 	);
 }
 
+/**
+ * Panel: the linked state when the entry has a saved link, and otherwise the
+ * field to paste a link and the form to publish the post.
+ *
+ * @return {Element} Panel.
+ */
 function ThreadPanel() {
+	const saved = useSelect(
+		( select ) =>
+			select( 'core/editor' ).getCurrentPostAttribute( 'meta' )?.[
+				META_KEY
+			] ?? '',
+		[]
+	);
+	// Success message of the last action, with the saved link it led to. It
+	// is shown while that link does not change.
+	const [ done, setDone ] = useState( null );
+	const onDone = ( message, link ) => setDone( { message, link } );
+
+	return (
+		<PluginDocumentSettingPanel
+			name="atproto-comments-thread"
+			title={ __( 'AT Protocol comments', 'atproto-comments' ) }
+		>
+			{ done && done.link === saved && (
+				<Notice status="success" onRemove={ () => setDone( null ) }>
+					{ done.message }
+				</Notice>
+			) }
+			{ saved ? (
+				<LinkedState uri={ saved } onDone={ onDone } />
+			) : (
+				<LinkField onPublished={ onDone } />
+			) }
+		</PluginDocumentSettingPanel>
+	);
+}
+
+/**
+ * Field to paste the link, and the publish form.
+ *
+ * @param {Object}                                  props             Props.
+ * @param {(message: string, link: string) => void} props.onPublished Called with a success message and the new link.
+ * @return {Element} Field and form.
+ */
+function LinkField( { onPublished } ) {
 	const stored = useSelect(
 		( select ) =>
 			select( 'core/editor' ).getEditedPostAttribute( 'meta' )?.[
@@ -111,10 +157,7 @@ function ThreadPanel() {
 	};
 
 	return (
-		<PluginDocumentSettingPanel
-			name="atproto-comments-thread"
-			title={ __( 'AT Protocol comments', 'atproto-comments' ) }
-		>
+		<div>
 			<TextControl
 				__nextHasNoMarginBottom
 				__next40pxDefaultSize
@@ -145,8 +188,8 @@ function ThreadPanel() {
 					{ errorMessage( error ) }
 				</Notice>
 			) }
-			<PublishForm />
-		</PluginDocumentSettingPanel>
+			<PublishForm onPublished={ onPublished } />
+		</div>
 	);
 }
 

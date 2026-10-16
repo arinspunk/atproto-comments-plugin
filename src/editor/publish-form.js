@@ -6,11 +6,12 @@
 /* @jsx createElement */
 import apiFetch from '@wordpress/api-fetch';
 import { __, sprintf } from '@wordpress/i18n';
-import { useDispatch, useRegistry, useSelect } from '@wordpress/data';
+import { useRegistry, useSelect } from '@wordpress/data';
 import { createElement, useState } from '@wordpress/element';
 import { Button, Notice, TextareaControl } from '@wordpress/components';
 
 import { countGraphemes } from './graphemes';
+import { persistLink } from './persist-link';
 
 const META_KEY = '_atproto_thread_uri';
 
@@ -62,7 +63,14 @@ function failure( error ) {
 	return { uncertain: true, message: uncertainMessage() };
 }
 
-export default function PublishForm() {
+/**
+ * Publish form.
+ *
+ * @param {Object}                                  props             Props.
+ * @param {(message: string, link: string) => void} props.onPublished Called with a success message and the new link once the entry is linked.
+ * @return {Element} Form.
+ */
+export default function PublishForm( { onPublished } ) {
 	const { accountReady, canPublish, settingsUrl } = editorData();
 
 	const { postId, postType, status, dirty, saving, savedLink, editedLink } =
@@ -82,8 +90,6 @@ export default function PublishForm() {
 			};
 		}, [] );
 	const registry = useRegistry();
-	const { editPost } = useDispatch( 'core/editor' );
-	const { receiveEntityRecords } = useDispatch( 'core' );
 
 	const [ text, setText ] = useState( '' );
 	const [ publishing, setPublishing ] = useState( false );
@@ -101,13 +107,6 @@ export default function PublishForm() {
 	}
 
 	if ( savedLink || editedLink ) {
-		if ( notice?.status === 'success' ) {
-			return (
-				<Notice status="success" isDismissible={ false }>
-					{ notice.message }
-				</Notice>
-			);
-		}
 		return (
 			<p className="atproto-comments-publish">
 				{ __(
@@ -175,41 +174,17 @@ export default function PublishForm() {
 				data: { text },
 			} );
 
-			// The server saved the link. Put it in the editor without marking
-			// the entry as modified, as core-data does after a save: edit
-			// the meta, then receive the record with that edit as persisted.
-			editPost( { meta: { [ META_KEY ]: uri } } );
-			const core = registry.select( 'core' );
-			const edits = core.getEntityRecordEdits(
-				'postType',
-				postType,
-				postId
-			);
-			const record = core.getEntityRecord( 'postType', postType, postId );
-			if ( record ) {
-				receiveEntityRecords(
-					'postType',
-					postType,
-					[
-						{
-							...record,
-							meta: { ...record.meta, [ META_KEY ]: uri },
-						},
-					],
-					undefined,
-					false,
-					{ meta: edits?.meta }
-				);
-			}
-
+			// The server saved the link: mark it as saved in the editor. The
+			// panel then shows the linked state instead of this form.
+			persistLink( registry, postType, postId, uri );
 			setText( '' );
-			setNotice( {
-				status: 'success',
-				message: __(
+			onPublished(
+				__(
 					'The post was published and the entry is linked to it.',
 					'atproto-comments'
 				),
-			} );
+				uri
+			);
 		} catch ( error ) {
 			const { uncertain, message } = failure( error );
 			setNotice( { status: uncertain ? 'warning' : 'error', message } );

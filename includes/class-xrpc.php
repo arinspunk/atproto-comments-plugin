@@ -12,8 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * XRPC procedures (POST) without redirects. PDS errors become WP_Error with
- * a translated message and a REST status; the PDS `message` is never shown.
+ * XRPC procedures (POST) and queries (GET) without redirects. PDS errors
+ * become WP_Error with a translated message, a REST status and the HTTP
+ * status of the PDS (`pds_status`); the PDS `message` is never shown.
  */
 final class Xrpc {
 
@@ -55,6 +56,20 @@ final class Xrpc {
 	 */
 	public static function upload_blob( $pds, $bytes, $mime, $token, $deadline = null ) {
 		return self::post( $pds, 'com.atproto.repo.uploadBlob', $bytes, $mime, $token, $deadline, self::UPLOAD_TIMEOUT );
+	}
+
+	/**
+	 * Calls a query (GET) without authentication.
+	 *
+	 * @param string        $pds      PDS URL.
+	 * @param string        $nsid     Method, e.g. `com.atproto.repo.getRecord`.
+	 * @param array         $params   Query parameters.
+	 * @param Deadline|null $deadline Global deadline, if any.
+	 * @return array|\WP_Error Decoded output.
+	 */
+	public static function query( $pds, $nsid, $params, $deadline = null ) {
+		$url = add_query_arg( array_map( 'rawurlencode', $params ), self::url( $pds, $nsid ) );
+		return self::request( 'GET', $url, null, null, null, $deadline, self::TIMEOUT );
 	}
 
 	/**
@@ -103,6 +118,34 @@ final class Xrpc {
 	 * @return array|\WP_Error
 	 */
 	private static function post( $pds, $nsid, $body, $content_type, $token, $deadline, $timeout ) {
+		return self::request( 'POST', self::url( $pds, $nsid ), $body, $content_type, $token, $deadline, $timeout );
+	}
+
+	/**
+	 * URL of an XRPC method.
+	 *
+	 * @param string $pds  PDS URL.
+	 * @param string $nsid Method.
+	 * @return string
+	 */
+	private static function url( $pds, $nsid ) {
+		return rtrim( $pds, '/' ) . '/xrpc/' . $nsid;
+	}
+
+	/**
+	 * Request to an XRPC method.
+	 *
+	 * @param string        $method       `GET` or `POST`.
+	 * @param string        $url          Method URL.
+	 * @param string        $pds          PDS URL.
+	 * @param string|null   $body         Request body (POST only).
+	 * @param string|null   $content_type Content type (POST only).
+	 * @param string|null   $token        Access token, if any.
+	 * @param Deadline|null $deadline     Global deadline, if any.
+	 * @param int           $timeout      Maximum timeout.
+	 * @return array|\WP_Error
+	 */
+	private static function request( $method, $url, $body, $content_type, $token, $deadline, $timeout ) {
 		if ( $deadline ) {
 			if ( ! $deadline->has( Deadline::MIN_REQUEST ) ) {
 				return Deadline::error();
@@ -110,24 +153,26 @@ final class Xrpc {
 			$timeout = $deadline->timeout( $timeout );
 		}
 
-		$headers = array(
-			'Content-Type' => $content_type,
-			'Accept'       => 'application/json',
-		);
+		$headers = array( 'Accept' => 'application/json' );
+		if ( null !== $content_type ) {
+			$headers['Content-Type'] = $content_type;
+		}
 		if ( null !== $token ) {
 			$headers['Authorization'] = 'Bearer ' . $token;
 		}
 
-		$response = wp_safe_remote_post(
-			rtrim( $pds, '/' ) . '/xrpc/' . $nsid,
-			array(
-				'timeout'             => $timeout,
-				'redirection'         => 0,
-				'limit_response_size' => self::MAX_RESPONSE_BYTES,
-				'headers'             => $headers,
-				'body'                => $body,
-			)
+		$args = array(
+			'timeout'             => $timeout,
+			'redirection'         => 0,
+			'limit_response_size' => self::MAX_RESPONSE_BYTES,
+			'headers'             => $headers,
 		);
+		if ( 'POST' === $method ) {
+			$args['body'] = $body;
+			$response     = wp_safe_remote_post( $url, $args );
+		} else {
+			$response = wp_safe_remote_get( $url, $args );
+		}
 		if ( is_wp_error( $response ) ) {
 			return self::error( 'atproto_comments_network' );
 		}
@@ -139,8 +184,10 @@ final class Xrpc {
 			return is_array( $data ) ? $data : self::error( 'atproto_comments_server' );
 		}
 
-		$name = is_array( $data ) && isset( $data['error'] ) && is_string( $data['error'] ) ? $data['error'] : '';
-		return self::error( self::error_code( $status, $name ), $name );
+		$name  = is_array( $data ) && isset( $data['error'] ) && is_string( $data['error'] ) ? $data['error'] : '';
+		$error = self::error( self::error_code( $status, $name ), $name );
+		$error->add_data( array_merge( $error->get_error_data(), array( 'pds_status' => $status ) ) );
+		return $error;
 	}
 
 	/**
@@ -151,6 +198,9 @@ final class Xrpc {
 	 * @return string
 	 */
 	private static function error_code( $status, $name ) {
+		if ( 'RecordNotFound' === $name ) {
+			return 'atproto_comments_record_not_found';
+		}
 		if ( 'AuthFactorTokenRequired' === $name ) {
 			return 'atproto_comments_auth_factor';
 		}
@@ -190,6 +240,9 @@ final class Xrpc {
 				break;
 			case 'atproto_comments_rate_limited':
 				$message = __( 'The AT Protocol server has received too many requests. Try again in a few minutes.', 'atproto-comments' );
+				break;
+			case 'atproto_comments_record_not_found':
+				$message = __( 'The post does not exist on the AT Protocol server.', 'atproto-comments' );
 				break;
 			default:
 				$code    = 'atproto_comments_server';

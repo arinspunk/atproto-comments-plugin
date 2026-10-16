@@ -59,6 +59,58 @@ class Xrpc_Test extends WP_UnitTestCase {
 		$this->assertSame( array( 'repo' => self::DID ), json_decode( $args['body'], true ) );
 	}
 
+	public function test_query_sends_get_without_token() {
+		$url = self::PDS . '/xrpc/com.atproto.repo.getRecord?repo=did%3Aplc%3Aabc234567abcdefghijklmno&collection=app.bsky.feed.post&rkey=3abc';
+		$this->mock_network( array( $url => self::response( 200, array( 'uri' => 'at://x' ) ) ) );
+
+		$result = Xrpc::query(
+			self::PDS . '/',
+			'com.atproto.repo.getRecord',
+			array(
+				'repo'       => self::DID,
+				'collection' => 'app.bsky.feed.post',
+				'rkey'       => '3abc',
+			),
+			self::deadline( 4 )
+		);
+
+		$this->assertSame( array( 'uri' => 'at://x' ), $result );
+		$args = $this->request_to( $url )['args'];
+		$this->assertSame( 'GET', $args['method'] );
+		$this->assertSame( 4.0, $args['timeout'] );
+		$this->assertSame( 0, $args['redirection'] );
+		$this->assertTrue( $args['reject_unsafe_urls'] );
+		$this->assertArrayNotHasKey( 'Authorization', $args['headers'] );
+		$this->assertArrayNotHasKey( 'Content-Type', $args['headers'] );
+	}
+
+	/**
+	 * RecordNotFound has its own code, with 400 or 404.
+	 *
+	 * @testWith [400]
+	 *           [404]
+	 *
+	 * @param int $status PDS status.
+	 */
+	public function test_record_not_found( $status ) {
+		$this->mock_network( array( self::RECORD_URL => self::response( $status, array( 'error' => 'RecordNotFound' ) ) ) );
+
+		$result = Xrpc::procedure( self::PDS, 'com.atproto.repo.createRecord', array(), 't' );
+
+		$this->assertSame( 'atproto_comments_record_not_found', $result->get_error_code() );
+		$this->assertSame( $status, $result->get_error_data()['pds_status'] );
+	}
+
+	public function test_generic_404_is_a_server_error_with_its_status() {
+		$this->mock_network( array( self::RECORD_URL => self::response( 404, '<html>Not Found</html>' ) ) );
+
+		$result = Xrpc::procedure( self::PDS, 'com.atproto.repo.createRecord', array(), 't' );
+
+		$this->assertSame( 'atproto_comments_server', $result->get_error_code() );
+		$this->assertSame( 404, $result->get_error_data()['pds_status'] );
+		$this->assertSame( 502, $result->get_error_data()['status'] );
+	}
+
 	public function test_upload_blob_sends_bytes() {
 		$blob = array(
 			'blob' => array(
