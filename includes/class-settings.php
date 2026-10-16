@@ -242,6 +242,7 @@ final class Settings {
 				submit_button();
 				?>
 			</form>
+			<?php Account::render_forget_form(); ?>
 		</div>
 		<?php
 	}
