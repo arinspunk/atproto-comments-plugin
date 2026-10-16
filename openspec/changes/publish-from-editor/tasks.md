@@ -44,8 +44,8 @@
 
 ## 7. readme e internacionalización
 
-- [ ] 7.1 Reescribir "External services" de `readme.txt` (PDS de la cuenta, `plc.directory` o dominio `did:web`, dominio del handle; qué se envía, incluido el idioma del sitio, y cuándo; términos de Bluesky para sus PDS), añadir a "Privacy" la app password cifrada, actualizar la instalación y la FAQ (cómo crear una app password, cómo publicar, quién puede publicar y el filtro `atproto_comments_publish_capability` con un ejemplo, handles en el vínculo, tarjeta sin imagen con medios externos o servidores lentos, qué hacer con el mensaje de resultado incierto, PDS en red privada) y el changelog; verificar que pasa el validador de readmes de WordPress.org
-- [ ] 7.2 Regenerar `languages/atproto-comments.pot` con `npm run make-pot` y registrar las traducciones del script de ajustes con `wp_set_script_translations`, y verificar que el `.pot` incluye las cadenas nuevas de ajustes, panel y errores con sus comentarios `translators:`
+- [x] 7.1 Reescribir "External services" de `readme.txt` (PDS de la cuenta, `plc.directory` o dominio `did:web`, dominio del handle; qué se envía, incluido el idioma del sitio, y cuándo; términos de Bluesky para sus PDS), añadir a "Privacy" la app password cifrada, actualizar la instalación y la FAQ (cómo crear una app password, cómo publicar, quién puede publicar y el filtro `atproto_comments_publish_capability` con un ejemplo, handles en el vínculo, tarjeta sin imagen con medios externos o servidores lentos, qué hacer con el mensaje de resultado incierto, PDS en red privada) y el changelog; verificar que pasa el validador de readmes de WordPress.org
+- [x] 7.2 Regenerar `languages/atproto-comments.pot` con `npm run make-pot` y registrar las traducciones del script de ajustes con `wp_set_script_translations`, y verificar que el `.pot` incluye las cadenas nuevas de ajustes, panel y errores con sus comentarios `translators:`
 
 ## 8. Verificación de integración
 
