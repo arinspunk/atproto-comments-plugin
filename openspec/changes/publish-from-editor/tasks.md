@@ -2,7 +2,7 @@
 
 ## 0. Prueba previa del panel
 
-- [ ] 0.1 Antes de la ruta de publicación, comprobar en wp-env (WP 6.5 y última versión) el mecanismo del design §11 con un 201 simulado: desde la consola o un botón temporal, tomar el registro completo con `getEntityRecord( 'postType', type, id )`, sustituir `meta._atproto_thread_uri`, llamar a `receiveEntityRecords` y después a `editPost` con el mismo valor; verificar que el campo muestra el vínculo, que `isEditedPostDirty()` sigue en `false` y que un "Actualizar" posterior no borra el vínculo guardado por el servidor. Si falla en alguna versión, anotar en el design la alternativa (solo `editPost`) antes de seguir
+- [x] 0.1 Antes de la ruta de publicación, comprobar en wp-env (WP 6.5 y última versión) el mecanismo del design §11 con un 201 simulado: desde la consola o un botón temporal, tomar el registro completo con `getEntityRecord( 'postType', type, id )`, sustituir `meta._atproto_thread_uri`, llamar a `receiveEntityRecords` y después a `editPost` con el mismo valor; verificar que el campo muestra el vínculo, que `isEditedPostDirty()` sigue en `false` y que un "Actualizar" posterior no borra el vínculo guardado por el servidor. Si falla en alguna versión, anotar en el design la alternativa (solo `editPost`) antes de seguir
 
 ## 1. Cifrado y plazo
 

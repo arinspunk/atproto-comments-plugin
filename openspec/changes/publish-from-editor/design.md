@@ -238,9 +238,13 @@ El estado del botón sale de `core/editor`:
 
 Cada motivo de bloqueo tiene su texto. El texto del post es estado local de React, no meta: no se guarda con la entrada.
 
-Tras un 201, el panel pone el vínculo en el registro guardado sin marcar la entrada como modificada: `receiveEntityRecords( 'postType', type, [ registro con el meta nuevo ] )` en `core`, y después `editPost` con el mismo valor. El registro que se pasa es el **completo** que ya hay en el store (`getEntityRecord( 'postType', type, id )`) con `meta._atproto_thread_uri` sustituido, no un objeto parcial. Si en alguna versión eso marcara la entrada como sucia, la alternativa aceptable es dejar solo `editPost`: guardar después es inocuo, porque escribe el mismo valor.
+Tras un 201, el panel pone el vínculo en el registro guardado sin marcar la entrada como modificada, igual que hace `core-data` al terminar un guardado:
 
-Es la parte con más incertidumbre del cambio, así que se prueba antes que la ruta de publicación (tarea 0.1), con un 201 simulado.
+1. `editPost( { meta: { _atproto_thread_uri: uri } } )` en `core/editor`.
+2. `getEntityRecordEdits( 'postType', type, id )` para leer la edición del meta que acaba de crearse.
+3. `receiveEntityRecords( 'postType', type, [ registro ], undefined, false, { meta: edits.meta } )` en `core`. El registro es el **completo** que ya hay en el store (`getEntityRecord( 'postType', type, id )`) con `meta._atproto_thread_uri` sustituido, no un objeto parcial. El último argumento (`persistedEdits`) hace que el reducer de ediciones descarte la del meta.
+
+Comprobado en la tarea 0.1, con un 201 simulado, en WP 6.5 + PHP 7.4 y en WP 7.1 + PHP 8.3: el registro guardado recibe el meta, `isEditedPostDirty()` sigue en `false`, el campo muestra el vínculo y un "Actualizar" posterior no lo borra. Sin `persistedEdits`, la entrada queda marcada como modificada en las dos versiones, en cualquier orden de las dos llamadas: el reducer no descarta la edición del meta al recibir el registro, aunque los valores coincidan. Por eso se descartó el mecanismo inicial (`receiveEntityRecords` sin `persistedEdits` y luego `editPost`) y no hace falta la alternativa de dejar solo `editPost`.
 
 **Etiqueta del botón:** "Publish to Bluesky", con una ayuda que aclara que el post se ve en cualquier app de AT Protocol. Bluesky es el nombre que reconocen los editores, y el registro es un `app.bsky.feed.post`. Alternativa descartada: "Publish to AT Protocol", que es más exacta pero no la entiende la mayoría.
 
