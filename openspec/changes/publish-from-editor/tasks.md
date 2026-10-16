@@ -50,7 +50,7 @@
 ## 8. Verificación de integración
 
 - [x] 8.1 Publicar en wp-env, con una cuenta real y una app password de prueba, una entrada con imagen destacada en una cuenta de un PDS de Bluesky y en otra de un PDS distinto (p. ej. Eurosky); verificar que el post aparece en las dos con la tarjeta y el idioma correcto, que `createSession` con el DID como `identifier` funciona en los dos PDS, que la entrada muestra el componente con el hilo y que un segundo clic rápido no crea un duplicado
-- [ ] 8.2 Ejecutar `composer phpcs`, `npm run lint:js`, `npm run test:php`, `npm run test:php:multisite`, `npm run test:js`, `npm run build` y `npm run plugin-check` con WP 6.5 + PHP 7.4 y con la última versión de WP + PHP 8.3, y verificar que todo pasa (los avisos de Plugin Check, como la consulta directa del lock, se justifican en la PR)
+- [x] 8.2 Ejecutar `composer phpcs`, `npm run lint:js`, `npm run test:php`, `npm run test:php:multisite`, `npm run test:js`, `npm run build` y `npm run plugin-check` con WP 6.5 + PHP 7.4 y con la última versión de WP + PHP 8.3, y verificar que todo pasa (los avisos de Plugin Check, como la consulta directa del lock, se justifican en la PR)
 
 ## Workflow follow-up
 
