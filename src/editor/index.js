@@ -17,6 +17,7 @@ import { Notice, Spinner, TextControl } from '@wordpress/components';
 import { PluginDocumentSettingPanel as EditorPanel } from '@wordpress/editor';
 import { PluginDocumentSettingPanel as LegacyPanel } from '@wordpress/edit-post';
 
+import PublishForm from './publish-form';
 import { normalize } from './thread-uri';
 
 const PluginDocumentSettingPanel = EditorPanel || LegacyPanel;
@@ -144,6 +145,7 @@ function ThreadPanel() {
 					{ errorMessage( error ) }
 				</Notice>
 			) }
+			<PublishForm />
 		</PluginDocumentSettingPanel>
 	);
 }

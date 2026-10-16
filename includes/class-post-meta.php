@@ -126,6 +126,30 @@ final class Post_Meta {
 			true
 		);
 		wp_set_script_translations( 'atproto-comments-editor', 'atproto-comments' );
+
+		$post = get_post();
+		if ( $post ) {
+			wp_add_inline_script(
+				'atproto-comments-editor',
+				'window.atprotoCommentsEditor = ' . wp_json_encode( self::editor_data( $post ) ) . ';',
+				'before'
+			);
+		}
+	}
+
+	/**
+	 * Data for the block editor panel. Never includes the account identifier
+	 * or the password.
+	 *
+	 * @param \WP_Post $post Post being edited.
+	 * @return array{accountReady: bool, canPublish: bool, settingsUrl: string|null}
+	 */
+	public static function editor_data( $post ) {
+		return array(
+			'accountReady' => Account::is_configured(),
+			'canPublish'   => Anchor_Post::user_can_publish( $post->ID ),
+			'settingsUrl'  => current_user_can( 'manage_options' ) ? admin_url( 'options-general.php?page=' . Settings::PAGE ) : null,
+		);
 	}
 
 	/**
