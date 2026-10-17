@@ -112,7 +112,12 @@ Después:
 
 Así se ejecuta el código que imprime el componente y carga los assets, que es lo que falla si al zip le falta `assets/vendor/` o `build/`, y los avisos PHP no dependen de que se impriman en la página.
 
-Contra **latest** ejecuta además Plugin Check sobre el plugin instalado desde el zip, ya sin la lista de exclusiones de `npm run plugin-check`.
+Contra **latest** ejecuta además Plugin Check sobre el plugin instalado desde el zip, ya sin la lista de exclusiones de `npm run plugin-check`. `wp plugin check` sale con código 0 aunque encuentre errores, así que el script lee su salida CSV y falla si hay alguna fila `ERROR`.
+
+Tres detalles para que la prueba sea repetible en local, donde wp-env no empieza de cero como en CI:
+- hace `wp-env stop` antes de arrancar, para recrear los contenedores: `npm run dist` sustituye `dist/atproto-comments/`, y unos contenedores en marcha conservarían el montaje de la carpeta borrada;
+- vacía las bases de datos con `wp-env reset all` tras arrancar, para no arrastrar datos de otra versión de WordPress;
+- guarda el `.wp-env.override.json` del desarrollador y lo restaura al terminar (`trap`), también si falla.
 
 Reparto de verificaciones:
 
