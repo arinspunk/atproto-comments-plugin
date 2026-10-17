@@ -152,6 +152,13 @@ Not directly. The "Comment" and "Reply" buttons open the conversation in the vis
 
 Its settings and the AT Protocol account (handle and encrypted app password) are deleted. The links stored in your posts are kept, so they are back if you install it again. Posts published on AT Protocol are not deleted.
 
+== Screenshots ==
+
+1. Replies to the linked Bluesky post shown as the post's comments.
+2. Publish the anchor post from the block editor, with a card that links to the entry.
+3. A linked entry: open the post, unlink it or delete it.
+4. Settings: where the comments go and the site's AT Protocol account.
+
 == Changelog ==
 
 = 0.1.0 =

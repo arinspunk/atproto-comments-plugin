@@ -1,0 +1,30 @@
+# Files left out of the distribution zip (scripts/dist.mjs).
+# A leading "/" anchors the entry to the repository root; without it, the
+# entry matches a file or directory name at any depth. A trailing "/" matches
+# directories only. "*" matches within a name.
+# Keep directories anchored: "vendor/" would also drop assets/vendor/.
+
+/dist/
+/src/
+/tests/
+/scripts/
+/openspec/
+/node_modules/
+/vendor/
+/.github/
+/.claude/
+/.ariadne/
+/.wordpress-org/
+/.git*
+/.wp-env*.json
+/.nvmrc
+/.distignore
+/composer.*
+/package*.json
+/phpcs.xml.dist
+/phpunit.xml.dist
+/eslint.config.cjs
+/README.md
+
+.DS_Store
+.phpunit.result.cache

@@ -1,0 +1,55 @@
+name: WordPress.org readme and assets
+
+# Publishes readme.txt and .wordpress-org/ to the WordPress.org SVN without
+# releasing a version. Skipped while WPORG_DEPLOY is not true, and when the
+# Stable tag of the readme has no git tag yet (a version bump merged but not
+# released).
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - readme.txt
+      - .wordpress-org/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wporg-assets
+  cancel-in-progress: false
+
+jobs:
+  assets:
+    name: Update readme and assets
+    if: github.ref == 'refs/heads/main' && vars.WPORG_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    environment: wordpress-org
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Check that the Stable tag is released
+        id: stable
+        run: |
+          stable="$(grep -m 1 -E '^Stable tag:' readme.txt | awk '{print $NF}' | tr -d '\r')"
+          if git rev-parse -q --verify "refs/tags/v$stable" >/dev/null; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Tag v$stable does not exist yet: readme and assets are not published."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.stable.outputs.publish == 'true'
+        uses: 10up/action-wordpress-plugin-asset-update@2480306f6f693672726d08b5917ea114cb2825f7 # 2.2.0
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: atproto-comments
+          ASSETS_DIR: .wordpress-org
+          # Copy only readme.txt: the repository has no build/ or
+          # assets/vendor/, so without it the action always sees changes
+          # and aborts.
+          IGNORE_OTHER_FILES: true
