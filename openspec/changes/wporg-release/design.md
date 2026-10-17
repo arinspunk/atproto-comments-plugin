@@ -62,9 +62,14 @@ Un script `scripts/check-version.mjs` lee los cuatro sitios (cabecera, constante
 
 ### 3. El zip se construye una vez, con `.distignore` y la carpeta `atproto-comments/`
 
-El job **package** ejecuta `npm ci && npm run build`, copia el árbol con `rsync --exclude-from=.distignore` a `dist/atproto-comments/` y lo comprime como `atproto-comments-X.Y.Z.zip`, con `atproto-comments/` como carpeta raíz. Lo sube como artefacto del workflow; los jobs siguientes lo descargan y no vuelven a construir.
+El job **package** ejecuta `npm ci` y `npm run dist`. Ese script hace `npm run build` y después `node scripts/dist.mjs`, que copia el árbol a `dist/atproto-comments/` filtrando con `.distignore` (`fs.cpSync` con filtro) y lo comprime con `zip` como `dist/atproto-comments-X.Y.Z.zip`, con `atproto-comments/` como carpeta raíz. El zip se sube como artefacto del workflow; los jobs siguientes lo descargan y no vuelven a construir.
 
-`.distignore` excluye: `dist/`, `src/`, `tests/`, `scripts/`, `openspec/`, `node_modules/`, `vendor/`, `.github/`, `.claude/`, `.wordpress-org/`, `.git*`, `.wp-env*.json`, `.nvmrc`, `.distignore`, `composer.*`, `package*.json`, `phpcs.xml.dist`, `phpunit.xml.dist`, `eslint.config.cjs`, `README.md`, `.DS_Store`, `.phpunit.result.cache`.
+Sintaxis de `.distignore`, interpretada por `dist.mjs`: una entrada por línea; `#` para comentarios; `*` como comodín dentro de un nombre; una `/` final indica directorio; una `/` inicial ancla la entrada a la raíz del repositorio, y sin ella la entrada se compara con el nombre del fichero o directorio a cualquier profundidad. **Los directorios se anclan siempre** (`/vendor/`, no `vendor/`): sin ancla, `vendor/` excluiría también `assets/vendor/`, que el zip necesita.
+
+`.distignore` excluye: `/dist/`, `/src/`, `/tests/`, `/scripts/`, `/openspec/`, `/node_modules/`, `/vendor/`, `/.github/`, `/.claude/`, `/.ariadne/`, `/.wordpress-org/`, `/.git*`, `/.wp-env*.json`, `/.nvmrc`, `/.distignore`, `/composer.*`, `/package*.json`, `/phpcs.xml.dist`, `/phpunit.xml.dist`, `/eslint.config.cjs`, `/README.md`, y en cualquier profundidad `.DS_Store` y `.phpunit.result.cache`.
+
+- Descartado: `rsync --exclude-from=.distignore`. La política de Claude Code de la organización deniega `rsync` en local, así que el empaquetado solo se podría probar en el runner. Además, su sintaxis sin ancla excluye `assets/vendor/` con el patrón `vendor/`.
+- Descartado: `tar --exclude-from`/`-X`. `bsdtar` (macOS) y GNU tar (runner) interpretan los patrones de forma distinta, y el zip local y el de CI podrían no coincidir.
 
 **No se ejecuta `composer install --no-dev` ni se incluye `vendor/`** (esto se aparta de la propuesta). Sin dependencias de ejecución solo generaría un autoloader que nadie carga. Si algún día hay una dependencia de ejecución, se añade el paso y se saca `vendor/` de `.distignore`.
 
