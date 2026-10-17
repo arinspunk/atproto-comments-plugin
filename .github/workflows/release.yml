@@ -1,0 +1,194 @@
+name: Release
+
+# Builds the distribution zip once, tests it, attaches it to the GitHub
+# Release and, when WPORG_DEPLOY is true, deploys it to the WordPress.org SVN.
+# Every job works on the commit of the tag (outputs of `verify`), never on
+# github.ref: a workflow_dispatch from main must release the tag, not main.
+
+on:
+  push:
+    tags: [ 'v*.*.*' ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to release again (vX.Y.Z)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  SLUG: atproto-comments
+
+jobs:
+  verify:
+    name: Verify the tag
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      version: ${{ steps.tag.outputs.version }}
+      sha: ${{ steps.sha.outputs.sha }}
+    steps:
+      - name: Resolve the tag
+        id: tag
+        env:
+          EVENT: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$EVENT" = workflow_dispatch ]; then tag="$INPUT_TAG"; else tag="$REF_NAME"; fi
+          if ! [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid tag \"$tag\": expected vX.Y.Z."
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ steps.tag.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Check that the tag is on main
+        run: |
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::The tag does not point to a commit on main."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Check the version
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: node scripts/check-version.mjs "$TAG"
+
+      - name: Commit of the tag
+        id: sha
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  ci:
+    name: CI
+    needs: verify
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.verify.outputs.sha }}
+
+  package:
+    name: Build the zip
+    needs: [ verify, ci ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.verify.outputs.sha }}
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run dist
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: plugin-zip
+          path: dist/${{ env.SLUG }}-${{ needs.verify.outputs.version }}.zip
+          if-no-files-found: error
+
+  smoke:
+    name: Smoke test (WP ${{ matrix.core }})
+    needs: [ verify, package ]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        core: [ '6.5', latest ]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.verify.outputs.sha }}
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # wp-env comes from the dev dependencies.
+      - run: npm ci
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: plugin-zip
+          path: dist
+
+      - name: Unzip
+        run: unzip -q "dist/${SLUG}-${VERSION}.zip" -d dist
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
+
+      - run: scripts/smoke.sh "${{ matrix.core }}"
+
+  github-release:
+    name: GitHub Release
+    needs: [ verify, smoke ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.verify.outputs.sha }}
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: plugin-zip
+          path: dist
+
+      - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          tag_name: ${{ needs.verify.outputs.tag }}
+          files: dist/${{ env.SLUG }}-${{ needs.verify.outputs.version }}.zip
+          fail_on_unmatched_files: true
+
+  deploy:
+    name: Deploy to WordPress.org
+    needs: [ verify, github-release ]
+    if: vars.WPORG_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    environment: wordpress-org
+    steps:
+      # The action reads ASSETS_DIR from the workspace.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.verify.outputs.sha }}
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: plugin-zip
+          path: dist
+
+      - name: Unzip
+        run: unzip -q "dist/${SLUG}-${VERSION}.zip" -d dist
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
+
+      - uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # 2.3.0
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: ${{ env.SLUG }}
+          # Always explicit: without it the action derives it from GITHUB_REF,
+          # which is refs/heads/main on a workflow_dispatch.
+          VERSION: ${{ needs.verify.outputs.version }}
+          BUILD_DIR: dist/${{ env.SLUG }}
+          ASSETS_DIR: .wordpress-org
