@@ -30,7 +30,7 @@ Estado actual que condiciona el diseño:
 **Non-Goals:**
 
 - Automatizar el cambio de versión (bump) o el changelog. Se edita a mano en una PR; el workflow solo comprueba la coherencia.
-- Crear el icono, el banner y las capturas de WordPress.org. Son diseño gráfico, no tooling, y no bloquean nada de este cambio (decisión 7). Quedan en el follow-up, antes de activar `WPORG_DEPLOY`.
+- Que el cambio dependa de los assets de WordPress.org. El banner y las capturas ya están en la rama; el icono, no. Son diseño gráfico, no tooling, y no bloquean nada de este cambio (decisión 7). Lo que falte queda en el follow-up, antes de activar `WPORG_DEPLOY`.
 - Gestionar traducciones: las hace translate.wordpress.org con los paquetes de idioma una vez publicado el plugin.
 - Publicar versiones beta o RC en WordPress.org.
 
@@ -132,22 +132,24 @@ Antes de subir comprueba que el tag de git `v<Stable tag>` existe. Si no existe,
 - Descartado: actualizar readme y assets solo dentro del workflow de release. Arreglar una errata o subir una captura obligaría a sacar una versión.
 - Descartado: dispararlo en cada push a `main`. Sin el filtro por rutas haría commits vacíos al SVN.
 
-### 7. Assets de WordPress.org: el hueco preparado, el contenido después
+### 7. Assets de WordPress.org: el formato fijado, el contenido cuando esté
 
-Este cambio deja preparado dónde y cómo van los assets, pero no los crea:
+Este cambio fija dónde y cómo van los assets, y no depende de que estén todos:
 
 - **Nada depende de ellos.** El formulario del primer envío solo recibe el zip, y los assets no van dentro: van a `assets/` del SVN, que existe solo tras la aprobación. La acción de deploy sincroniza `ASSETS_DIR` solo si la carpeta existe (`deploy.sh`), y Plugin Check no los exige.
-- **Se suben sin sacar versión.** Cuando estén listos, una PR que añade `.wordpress-org/` dispara el workflow de assets (decisión 6).
-- **La sección `== Screenshots ==` de `readme.txt` no se añade todavía.** Sin las imágenes, la ficha mostraría leyendas sueltas. Se añade en la misma PR que las capturas.
+- **Se suben sin sacar versión.** Lo que falte se añade en una PR a `.wordpress-org/`, que dispara el workflow de assets (decisión 6).
+- **La sección `== Screenshots ==` de `readme.txt` va siempre con las capturas.** Sin las imágenes, la ficha mostraría leyendas sueltas.
 
-Lo que se fija ya, y se documenta en la guía (decisión 8), es el formato que espera WordPress.org:
-- `icon-128x128.png` e `icon-256x256.png` (opcionalmente `icon.svg`, siempre con los PNG de reserva);
-- `banner-772x250.png` y `banner-1544x500.png`;
-- `screenshot-1.png`, `screenshot-2.png`… numeradas en el mismo orden que las leyendas de `== Screenshots ==`. Orden previsto: ajustes del plugin, panel del editor, comentarios en el frontend.
+Estado actual: el banner, las cuatro capturas y la sección `== Screenshots ==` ya están en la rama. Falta el icono.
+
+Formato que espera WordPress.org, documentado en la guía (decisión 8):
+- `icon-128x128.png` e `icon-256x256.png` (opcionalmente `icon.svg`, siempre con los PNG de reserva). **Pendiente.**
+- `banner-772x250.png` y `banner-1544x500.png`.
+- `screenshot-1.png` a `screenshot-4.png`, numeradas en el mismo orden que las leyendas de `== Screenshots ==`: comentarios en el frontend, publicar el post ancla desde el editor, entrada vinculada (abrir, desvincular, borrar) y ajustes. Todas miden 1470 × 922, tomadas con la última versión de WordPress.
 
 Todos en `.wordpress-org/`, que `.distignore` excluye del zip.
 
-- Descartado: crear los assets dentro de este cambio. Bloquearía el archivado del cambio esperando un trabajo de diseño que no afecta a ningún workflow.
+- Descartado: esperar a tener todos los assets para cerrar el cambio. Bloquearía el archivado esperando un trabajo de diseño que no afecta a ningún workflow.
 - Descartado: icono SVG sin PNG. WordPress.org lo admite, pero exige igualmente los PNG de reserva.
 
 ### 8. Guía de release en `README.md`
