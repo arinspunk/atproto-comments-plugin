@@ -2,7 +2,7 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: ATproto Comments 0.1.0\n"
+"Project-Id-Version: Comments from atproto 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/atproto-comments\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: includes/class-settings.php:192
 #: includes/class-settings.php:193
-msgid "ATproto Comments"
+msgid "Comments from atproto"
 msgstr ""
 
 #. Plugin URI of the plugin

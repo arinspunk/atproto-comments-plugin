@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="AtprotoComments">
-	<description>Coding standards for ATproto Comments.</description>
+	<description>Coding standards for Comments from atproto.</description>
 
 	<file>.</file>
 	<exclude-pattern>/vendor/*</exclude-pattern>
