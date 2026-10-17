@@ -1,4 +1,4 @@
-=== AT Protocol Comments ===
+=== Comments from atproto ===
 Contributors: arinspunk
 Tags: comments, bluesky, atproto, fediverse, social
 Requires at least: 6.5
@@ -12,7 +12,7 @@ Show the replies to a Bluesky (AT Protocol) post as the comments of your posts.
 
 == Description ==
 
-AT Protocol Comments turns a conversation on Bluesky, or any other AT Protocol app, into the comment section of a WordPress post.
+Comments from atproto turns a conversation on Bluesky, or any other AT Protocol app, into the comment section of a WordPress post.
 
 Publish your post and then publish its Bluesky post from the editor, with your own text and a card that links back to the entry. Or share it yourself and paste the link to that post. The replies appear under your post, threaded, with their authors and dates. Visitors reply from their own app; there is nothing to moderate in WordPress and no accounts to create.
 
@@ -27,13 +27,15 @@ Publish your post and then publish its Bluesky post from the editor, with your o
 
 The comments are displayed by the [atproto-comments](https://github.com/arinspunk/atproto-comments) web component, bundled with the plugin. Its source code is available on [GitHub](https://github.com/arinspunk/atproto-comments) and as the [atproto-comments npm package](https://www.npmjs.com/package/atproto-comments). The source of this plugin, including its block editor panel, is on [GitHub](https://github.com/arinspunk/atproto-comments-plugin).
 
+Comments from atproto is an independent project by the author of the atproto-comments web component. It is not affiliated with or endorsed by AT Protocol or Bluesky.
+
 == External services ==
 
 This plugin connects to AT Protocol services. The visitor's browser loads the replies; the WordPress server only makes requests when an editor publishes or deletes an anchor post, tests the account connection or saves a link with a handle.
 
 = AppView (visitor's browser) =
 
-The replies to the linked post are loaded from an AT Protocol AppView. By default it is the public AppView run by Bluesky Social PBC, `https://public.api.bsky.app`. You can change it in Settings → AT Protocol Comments.
+The replies to the linked post are loaded from an AT Protocol AppView. By default it is the public AppView run by Bluesky Social PBC, `https://public.api.bsky.app`. You can change it in Settings → Comments from atproto.
 
 * **What is sent:** the `at://` URI of the linked post and the maximum reply depth. The request is made by the visitor's browser, so the AppView also receives the visitor's IP address and browser details, as with any web request.
 * **When:** every time a visitor opens a post that is linked to an AT Protocol post. Nothing is sent on other pages.
@@ -70,8 +72,8 @@ Consider mentioning the AppView, the publishing of anchor posts and this `localS
 == Installation ==
 
 1. Install and activate the plugin from Plugins → Add New, or upload the plugin folder to `/wp-content/plugins/`.
-2. Optionally, review Settings → AT Protocol Comments.
-3. To publish from the editor, add the site's AT Protocol account in Settings → AT Protocol Comments: its handle and an app password. Click "Test connection" to check it.
+2. Optionally, review Settings → Comments from atproto.
+3. To publish from the editor, add the site's AT Protocol account in Settings → Comments from atproto: its handle and an app password. Click "Test connection" to check it.
 4. Publish an entry. In the "AT Protocol comments" panel of the block editor, write the text of the post and click "Publish to Bluesky".
 5. Or share the entry yourself in any AT Protocol app, then paste the link to that post in the "AT Protocol comments" panel (block editor) or box (classic editor), and save.
 
@@ -79,7 +81,7 @@ Consider mentioning the AppView, the publishing of anchor posts and this `localS
 
 = How do I create an app password? =
 
-An app password lets an app use your account without your main password, and you can revoke it at any time. In Bluesky, go to Settings → Privacy and security → App passwords, add one (for example "WordPress") and copy it into Settings → AT Protocol Comments. Other providers have a similar option. Don't give it access to direct messages: the plugin doesn't need it.
+An app password lets an app use your account without your main password, and you can revoke it at any time. In Bluesky, go to Settings → Privacy and security → App passwords, add one (for example "WordPress") and copy it into Settings → Comments from atproto. Other providers have a similar option. Don't give it access to direct messages: the plugin doesn't need it.
 
 = How do I publish the anchor post? =
 
@@ -120,7 +122,7 @@ No. Trashing, restoring or permanently deleting an entry in WordPress never touc
 
 = "Delete from Bluesky" is disabled =
 
-The site doesn't know the account's DID yet. It learns it the first time the account is resolved: when you test the connection in Settings → AT Protocol Comments or publish a post. Test the connection once and the button is enabled. This can happen after updating the plugin or changing the account's handle.
+The site doesn't know the account's DID yet. It learns it the first time the account is resolved: when you test the connection in Settings → Comments from atproto or publish a post. Test the connection once and the button is enabled. This can happen after updating the plugin or changing the account's handle.
 
 = It says it could not be confirmed that the post was deleted =
 
@@ -136,7 +138,7 @@ For security, the WordPress server only connects to public addresses, so it can'
 
 = My theme doesn't show the comments =
 
-In "Replace the native comments" mode, the plugin takes the place of the theme's comments area. Some themes, especially block themes with custom templates, don't have one in their single post template. Switch to "After the content" in Settings → AT Protocol Comments, which works with any theme.
+In "Replace the native comments" mode, the plugin takes the place of the theme's comments area. Some themes, especially block themes with custom templates, don't have one in their single post template. Switch to "After the content" in Settings → Comments from atproto, which works with any theme.
 
 = How do I turn off native WordPress comments? =
 
@@ -152,15 +154,14 @@ Its settings and the AT Protocol account (handle and encrypted app password) are
 
 == Changelog ==
 
-= Unreleased =
+= 0.1.0 =
+* First public version.
+* Link a post to an AT Protocol post, from the block editor or the classic editor, and show its replies as the post's comments, in the site language.
+* Links with a handle are accepted and converted to the DID.
 * Publish the anchor post from the block editor, with a card linking to the entry and the site language.
 * Site AT Protocol account with an encrypted app password and a connection test.
 * Accounts on any AT Protocol server: the handle, DID and PDS are resolved, nothing is hard-coded.
-* Links with a handle are accepted and converted to the DID.
 * Only Editors and Administrators can publish, adjustable with the `atproto_comments_publish_capability` filter.
 * Unlink an entry from the block editor with one click, without touching the post.
 * Delete the anchor post from Bluesky when it belongs to the site account, with a confirmation that shows the number of replies.
 * The link to open the linked post can point to another app with the `atproto_comments_post_url` filter.
-
-= 0.1.0 =
-* First version: link posts to an AT Protocol post and show its replies as comments.

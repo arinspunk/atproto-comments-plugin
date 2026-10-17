@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       AT Protocol Comments
+ * Plugin Name:       Comments from atproto
  * Plugin URI:        https://github.com/arinspunk/atproto-comments-plugin
  * Description:       Shows replies to an AT Protocol (Bluesky) post as the comments of a post.
  * Version:           0.1.0
