@@ -6,8 +6,10 @@
 	"license": "GPL-2.0-or-later",
 	"scripts": {
 		"vendor": "node scripts/vendor.mjs",
+		"check-version": "node scripts/check-version.mjs",
 		"build": "npm run vendor && wp-scripts build editor=./src/editor/index.js settings=./src/settings/index.js --output-path=build",
-		"start": "wp-scripts start editor=./src/editor/index.js settings=./src/settings/index.js --output-path=build",
+		"dist": "npm run build && node scripts/dist.mjs",
+		"start":"wp-scripts start editor=./src/editor/index.js settings=./src/settings/index.js --output-path=build",
 		"test:js": "wp-scripts test-unit-js",
 		"test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments vendor/bin/phpunit",
 		"test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments env WP_TESTS_MULTISITE=1 vendor/bin/phpunit",

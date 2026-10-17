@@ -62,7 +62,7 @@ Un script `scripts/check-version.mjs` lee los cuatro sitios (cabecera, constante
 
 ### 3. El zip se construye una vez, con `.distignore` y la carpeta `atproto-comments/`
 
-El job **package** ejecuta `npm ci` y `npm run dist`. Ese script hace `npm run build` y después `node scripts/dist.mjs`, que copia el árbol a `dist/atproto-comments/` filtrando con `.distignore` (`fs.cpSync` con filtro) y lo comprime con `zip` como `dist/atproto-comments-X.Y.Z.zip`, con `atproto-comments/` como carpeta raíz. El zip se sube como artefacto del workflow; los jobs siguientes lo descargan y no vuelven a construir.
+El job **package** ejecuta `npm ci` y `npm run dist`. Ese script hace `npm run build` y después `node scripts/dist.mjs`, que copia el árbol a `dist/atproto-comments/` filtrando con `.distignore` (una copia recursiva propia: `fs.cpSync` no admite copiar dentro del propio origen, y `dist/` está dentro del repositorio) y lo comprime con `zip` como `dist/atproto-comments-X.Y.Z.zip`, con `atproto-comments/` como carpeta raíz. El zip se sube como artefacto del workflow; los jobs siguientes lo descargan y no vuelven a construir.
 
 Sintaxis de `.distignore`, interpretada por `dist.mjs`: una entrada por línea; `#` para comentarios; `*` como comodín dentro de un nombre; una `/` final indica directorio; una `/` inicial ancla la entrada a la raíz del repositorio, y sin ella la entrada se compara con el nombre del fichero o directorio a cualquier profundidad. **Los directorios se anclan siempre** (`/vendor/`, no `vendor/`): sin ancla, `vendor/` excluiría también `assets/vendor/`, que el zip necesita.
 
