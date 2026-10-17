@@ -35,6 +35,9 @@ The design decisions behind each part, with the alternatives that were discarded
 | `src/settings/` | Connection test button on the settings page |
 | `templates/comments.php` | Replacement for the theme's comments template |
 | `scripts/vendor.mjs` | Copies the web component from `node_modules` to `assets/vendor/` |
+| `scripts/check-version.mjs`, `dist.mjs`, `smoke.sh` | Release tooling: version check, distribution zip, smoke test of the zip (see [Releasing](#releasing)) |
+| `.distignore` | What the distribution zip leaves out |
+| `.wordpress-org/` | WordPress.org directory assets: icon, banner, screenshots (not in the zip) |
 | `tests/php/`, `tests/js/` | PHPUnit (WordPress test suite) and Vitest tests |
 | `tests/fixtures/thread-uris.json` | Link normalization cases shared by the PHP and JS tests |
 | `openspec/` | Specs and changes (see [Working with OpenSpec](#working-with-openspec)) |
@@ -118,7 +121,7 @@ Please don't report vulnerabilities in public issues. Use GitHub's [private vuln
 
 | Check | What it does | How to reproduce it locally |
 |---|---|---|
-| `js` | `npm ci`, `npm run lint:js`, `npm run test:js`, `npm run build` | The same commands |
+| `js` | `npm ci`, `npm run check-version`, `npm run lint:js`, `npm run test:js`, `npm run build` | The same commands |
 | `phpcs` | `composer install` and `composer phpcs` with PHP 7.4 on the runner | `npx wp-env run cli --env-cwd=wp-content/plugins/atproto-comments composer phpcs` |
 | `phpunit (minimum)` | WordPress 6.5 + PHP 7.4: `npm run test:php` and `npm run test:php:multisite` | Without `.wp-env.override.json`: `npx wp-env start --update` and both commands |
 | `phpunit (latest)` | Latest WordPress + PHP 8.3: the same, plus `npm run plugin-check` (fails on any `ERROR`) | With the current-combination override: `npx wp-env start --update`, both commands and `npm run plugin-check` |
@@ -141,6 +144,67 @@ gh api -X PUT repos/arinspunk/atproto-comments-plugin/rulesets/<id> --input .git
 ```
 
 If you rename a workflow job, update the ruleset's required checks in the same PR.
+
+## Releasing
+
+Releases are built by `.github/workflows/release.yml` from a `vX.Y.Z` tag on `main`. It checks the tag and the version, runs the CI again on the tag's commit, builds the zip once, installs it on WordPress 6.5 and on the latest version, attaches it to the GitHub Release and, once the plugin is approved on WordPress.org, deploys that same zip to the SVN.
+
+### Publishing a version
+
+1. In a pull request, set the new version in these places, and add the changelog entry to `readme.txt`:
+   - `Version:` in the header of `atproto-comments.php`;
+   - `ATPROTO_COMMENTS_VERSION` in `atproto-comments.php`;
+   - `Stable tag:` in `readme.txt`;
+   - `version` in `package.json`, and both `version` keys of `package-lock.json` (`npm version X.Y.Z --no-git-tag-version` updates the three).
+2. Check them: `npm run check-version` (the CI runs it too).
+3. Merge the pull request, then tag `main`:
+
+   ```bash
+   git switch main && git pull
+   npm run check-version -- vX.Y.Z
+   git tag vX.Y.Z && git push origin vX.Y.Z
+   ```
+
+To release a tag again (for example after the WordPress.org approval), run the **Release** workflow from the Actions tab with the tag as input. Every job uses the tag's commit, whichever branch the workflow is started from.
+
+### First submission to WordPress.org
+
+The WordPress.org SVN repository only exists after the plugin is approved, so the first version is submitted by hand:
+
+1. With the `WPORG_DEPLOY` variable unset, push the tag. The workflow stops after the GitHub Release; the `deploy` job is skipped.
+2. Download `atproto-comments-X.Y.Z.zip` from the GitHub Release and upload it at <https://wordpress.org/plugins/developers/add/>.
+3. **Ask for the slug `atproto-comments`.** WordPress.org proposes one from the plugin name (`comments-from-atproto`). If the written permission from Bluesky has arrived, attach it: the guidelines don't allow a slug that starts with another party's trademark without proof of authorization.
+4. After the approval, in the repository settings:
+   - create the environment `wordpress-org` with the secrets `SVN_USERNAME` and `SVN_PASSWORD` (your WordPress.org account);
+   - set the repository variable `WPORG_DEPLOY` to `true`;
+   - run the **Release** workflow by hand with the tag. Check in the `deploy` log that `VERSION` is `X.Y.Z`.
+
+Setting `WPORG_DEPLOY` to anything other than `true` stops every publication to the SVN. A bad version can't be removed from WordPress.org: release a fixed one.
+
+### Readme and assets only
+
+`.github/workflows/wporg-assets.yml` publishes `readme.txt` and `.wordpress-org/` without releasing a version. It runs when either changes on `main`, and by hand from the Actions tab. It does nothing until `WPORG_DEPLOY` is `true`, and it skips with a notice when the `Stable tag` of the readme has no git tag yet (a version bump merged but not released).
+
+The directory assets live in `.wordpress-org/`, with the exact names WordPress.org expects:
+
+| File | Size |
+|---|---|
+| `icon-128x128.png`, `icon-256x256.png` | 128 × 128, 256 × 256 |
+| `banner-772x250.png`, `banner-1544x500.png` | 772 × 250, 1544 × 500 |
+| `screenshot-1.png`, `screenshot-2.png`… | Any size; all the same here (1470 × 922) |
+
+Screenshots are numbered in the order of the captions in the `== Screenshots ==` section of `readme.txt`. Add or reorder both in the same pull request.
+
+### Testing the zip locally
+
+```bash
+npm run dist                 # builds and writes dist/atproto-comments-X.Y.Z.zip and dist/atproto-comments/
+unzip -l dist/atproto-comments-*.zip
+scripts/smoke.sh 6.5         # WordPress 6.5 + PHP 7.4
+scripts/smoke.sh latest      # latest WordPress + PHP 8.3, plus Plugin Check
+```
+
+`smoke.sh` installs `dist/atproto-comments/` in wp-env and checks the activation, a linked post that prints the component with its assets, the settings page and an empty `debug.log`. It **resets the wp-env databases** and replaces `.wp-env.override.json` while it runs (it restores it at the end); run `npx wp-env start --update` afterwards to go back to your usual environment.
 
 ## License
 

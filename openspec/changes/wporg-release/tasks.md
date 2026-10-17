@@ -27,12 +27,12 @@
 
 ## 6. Documentación y OpenSpec
 
-- [ ] 6.1 Añadir al `README.md` del repo la sección «Publicar una versión» (decisión 8): bump en una PR (los cuatro sitios, las dos claves de `package-lock.json` y el changelog), `npm run check-version`, tag y push; primer envío manual con `WPORG_DEPLOY` sin activar, pidiendo el slug `atproto-comments` y adjuntando el permiso de Bluesky si ya ha llegado (decisión 9); configuración tras la aprobación (environment `wordpress-org`, secrets `SVN_USERNAME`/`SVN_PASSWORD`, variable `WPORG_DEPLOY`, relanzar el tag con `workflow_dispatch` indicando el tag); cómo actualizar solo readme y assets; los assets de WordPress.org de la decisión 7 (carpeta `.wordpress-org/`, nombres y tamaños exactos, numeración de las capturas según `== Screenshots ==`, y que esa sección del readme se añade en la misma PR que las capturas); y cómo probar el zip en local con `npm run dist` y `scripts/smoke.sh`. Se verifica siguiendo en local los comandos de la guía que no publican nada y comprobando que funcionan tal como están escritos.
-- [ ] 6.2 Añadir `skip_specs: true` al `.openspec.yaml` del cambio. Se verifica con `openspec validate wporg-release --strict`, que pasa sin deltas.
+- [x] 6.1 Añadir al `README.md` del repo la sección «Publicar una versión» (decisión 8): bump en una PR (los cuatro sitios, las dos claves de `package-lock.json` y el changelog), `npm run check-version`, tag y push; primer envío manual con `WPORG_DEPLOY` sin activar, pidiendo el slug `atproto-comments` y adjuntando el permiso de Bluesky si ya ha llegado (decisión 9); configuración tras la aprobación (environment `wordpress-org`, secrets `SVN_USERNAME`/`SVN_PASSWORD`, variable `WPORG_DEPLOY`, relanzar el tag con `workflow_dispatch` indicando el tag); cómo actualizar solo readme y assets; los assets de WordPress.org de la decisión 7 (carpeta `.wordpress-org/`, nombres y tamaños exactos, numeración de las capturas según `== Screenshots ==`, y que esa sección del readme se añade en la misma PR que las capturas); y cómo probar el zip en local con `npm run dist` y `scripts/smoke.sh`. Se verifica siguiendo en local los comandos de la guía que no publican nada y comprobando que funcionan tal como están escritos.
+- [x] 6.2 Añadir `skip_specs: true` al `.openspec.yaml` del cambio. Se verifica con `openspec validate wporg-release --strict`, que pasa sin deltas.
 
 ## 7. Integración
 
-- [ ] 7.1 Ejecutar en local la cadena completa sin publicar: `npm run check-version -- v0.1.0`, `npm run dist`, `scripts/smoke.sh 6.5` y `scripts/smoke.sh latest`. Se verifica con los cuatro comandos en verde sobre el mismo zip.
+- [x] 7.1 Ejecutar en local la cadena completa sin publicar: `npm run check-version -- v0.1.0`, `npm run dist`, `scripts/smoke.sh 6.5` y `scripts/smoke.sh latest`. Se verifica con los cuatro comandos en verde sobre el mismo zip.
 
 ## Workflow follow-up
 
