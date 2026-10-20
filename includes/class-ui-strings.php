@@ -42,25 +42,25 @@ final class UI_Strings {
 	 */
 	public static function all() {
 		return array(
-			'comment'          => __( 'Comment', 'atproto-comments' ),
-			'reply'            => __( 'Reply', 'atproto-comments' ),
+			'comment'          => __( 'Comment', 'parolas' ),
+			'reply'            => __( 'Reply', 'parolas' ),
 			/* translators: Accessible label of the reply button. {name} is the author's name; keep it as is. */
-			'replyTo'          => __( 'Reply to {name}', 'atproto-comments' ),
-			'otherApp'         => __( 'Other app', 'atproto-comments' ),
+			'replyTo'          => __( 'Reply to {name}', 'parolas' ),
+			'otherApp'         => __( 'Other app', 'parolas' ),
 			/* translators: Placeholder of the field where visitors type the domain of their AT Protocol app. */
-			'inputPlaceholder' => __( 'app.example', 'atproto-comments' ),
-			'invalidDomain'    => __( 'Invalid domain', 'atproto-comments' ),
-			'error'            => __( 'Comments couldn\'t be loaded.', 'atproto-comments' ),
-			'viewMore'         => __( 'View more on Bluesky', 'atproto-comments' ),
-			'now'              => _x( 'now', 'relative time under one minute', 'atproto-comments' ),
+			'inputPlaceholder' => __( 'app.example', 'parolas' ),
+			'invalidDomain'    => __( 'Invalid domain', 'parolas' ),
+			'error'            => __( 'Comments couldn\'t be loaded.', 'parolas' ),
+			'viewMore'         => __( 'View more on Bluesky', 'parolas' ),
+			'now'              => _x( 'now', 'relative time under one minute', 'parolas' ),
 			/* translators: Abbreviation of "minutes", shown after a number as in "5 m". */
-			'minutes'          => _x( 'm', 'abbreviation of minutes', 'atproto-comments' ),
+			'minutes'          => _x( 'm', 'abbreviation of minutes', 'parolas' ),
 			/* translators: Abbreviation of "hours", shown after a number as in "5 h". */
-			'hours'            => _x( 'h', 'abbreviation of hours', 'atproto-comments' ),
+			'hours'            => _x( 'h', 'abbreviation of hours', 'parolas' ),
 			/* translators: Abbreviation of "days", shown after a number as in "5 d". */
-			'days'             => _x( 'd', 'abbreviation of days', 'atproto-comments' ),
+			'days'             => _x( 'd', 'abbreviation of days', 'parolas' ),
 			/* translators: Abbreviation of "months", shown after a number as in "5 mo". */
-			'months'           => _x( 'mo', 'abbreviation of months', 'atproto-comments' ),
+			'months'           => _x( 'mo', 'abbreviation of months', 'parolas' ),
 		);
 	}
 

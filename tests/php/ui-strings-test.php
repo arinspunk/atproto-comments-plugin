@@ -40,7 +40,7 @@ class UI_Strings_Test extends WP_UnitTestCase {
 
 	public function test_translated_returns_only_translated_keys() {
 		$filter = static function ( $translation, $text, $domain ) {
-			return 'atproto-comments' === $domain && 'Comment' === $text ? 'Comentar' : $translation;
+			return 'parolas' === $domain && 'Comment' === $text ? 'Comentar' : $translation;
 		};
 		add_filter( 'gettext', $filter, 10, 3 );
 		$this->assertSame( array( 'comment' => 'Comentar' ), UI_Strings::translated() );
@@ -49,7 +49,7 @@ class UI_Strings_Test extends WP_UnitTestCase {
 
 	public function test_translated_includes_contextual_strings() {
 		$filter = static function ( $translation, $text, $context, $domain ) {
-			return 'atproto-comments' === $domain && 'mo' === $text ? 'mes' : $translation;
+			return 'parolas' === $domain && 'mo' === $text ? 'mes' : $translation;
 		};
 		add_filter( 'gettext_with_context', $filter, 10, 4 );
 		$this->assertSame( array( 'months' => 'mes' ), UI_Strings::translated() );

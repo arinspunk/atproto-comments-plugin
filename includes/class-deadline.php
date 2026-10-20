@@ -92,7 +92,7 @@ final class Deadline {
 	public static function error() {
 		return new \WP_Error(
 			'atproto_comments_timeout',
-			__( 'There was not enough time left to contact the AT Protocol server. Try again.', 'atproto-comments' ),
+			__( 'There was not enough time left to contact the AT Protocol server. Try again.', 'parolas' ),
 			array( 'status' => 502 )
 		);
 	}

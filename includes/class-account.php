@@ -170,7 +170,7 @@ final class Account {
 		}
 		if ( ! self::is_valid_identifier( $identifier ) ) {
 			Crypto::wipe( $new );
-			self::add_error( 'identifier', __( 'The AT Protocol account must be a handle (like example.bsky.social) or a DID (did:…). The saved account has not changed.', 'atproto-comments' ) );
+			self::add_error( 'identifier', __( 'The AT Protocol account must be a handle (like example.bsky.social) or a DID (did:…). The saved account has not changed.', 'parolas' ) );
 			return $previous;
 		}
 
@@ -243,13 +243,13 @@ final class Account {
 	public static function add_fields() {
 		add_settings_section(
 			self::SECTION,
-			__( 'AT Protocol account', 'atproto-comments' ),
+			__( 'AT Protocol account', 'parolas' ),
 			array( __CLASS__, 'render_section' ),
 			Settings::PAGE
 		);
 		add_settings_field(
 			'atproto_comments_account_identifier',
-			__( 'Handle or DID', 'atproto-comments' ),
+			__( 'Handle or DID', 'parolas' ),
 			array( __CLASS__, 'field_identifier' ),
 			Settings::PAGE,
 			self::SECTION,
@@ -257,7 +257,7 @@ final class Account {
 		);
 		add_settings_field(
 			'atproto_comments_account_password',
-			__( 'App password', 'atproto-comments' ),
+			__( 'App password', 'parolas' ),
 			array( __CLASS__, 'field_password' ),
 			Settings::PAGE,
 			self::SECTION,
@@ -265,7 +265,7 @@ final class Account {
 		);
 		add_settings_field(
 			'atproto_comments_account_test',
-			__( 'Connection', 'atproto-comments' ),
+			__( 'Connection', 'parolas' ),
 			array( __CLASS__, 'field_test' ),
 			Settings::PAGE,
 			self::SECTION
@@ -278,16 +278,16 @@ final class Account {
 	public static function render_section() {
 		?>
 		<p>
-			<?php esc_html_e( 'Account used to publish the anchor post of an entry from the editor. There is one account for the whole site.', 'atproto-comments' ); ?>
+			<?php esc_html_e( 'Account used to publish the anchor post of an entry from the editor. There is one account for the whole site.', 'parolas' ); ?>
 		</p>
 		<p>
-			<?php esc_html_e( 'Use an app password, not the account\'s main password. An app password can only be used by apps like this one and can be revoked at any time without changing the main password. In Bluesky, create one in Settings → Privacy and security → App passwords.', 'atproto-comments' ); ?>
+			<?php esc_html_e( 'Use an app password, not the account\'s main password. An app password can only be used by apps like this one and can be revoked at any time without changing the main password. In Bluesky, create one in Settings → Privacy and security → App passwords.', 'parolas' ); ?>
 		</p>
 		<p>
 			<?php
 			printf(
 				/* translators: %s: name of the filter, atproto_comments_publish_capability. */
-				esc_html__( 'Only editors and administrators can publish to the site account. Developers can change this with the %s filter.', 'atproto-comments' ),
+				esc_html__( 'Only editors and administrators can publish to the site account. Developers can change this with the %s filter.', 'parolas' ),
 				'<code>atproto_comments_publish_capability</code>'
 			);
 			?>
@@ -296,7 +296,7 @@ final class Account {
 		if ( self::is_password_unreadable() ) {
 			?>
 			<div class="notice notice-warning inline">
-				<p><?php esc_html_e( 'The saved app password can no longer be decrypted, probably because the site\'s security keys changed. Enter the app password again.', 'atproto-comments' ); ?></p>
+				<p><?php esc_html_e( 'The saved app password can no longer be decrypted, probably because the site\'s security keys changed. Enter the app password again.', 'parolas' ); ?></p>
 			</div>
 			<?php
 		}
@@ -315,7 +315,7 @@ final class Account {
 			placeholder="example.bsky.social"
 			aria-describedby="atproto-comments-account-identifier-description" />
 		<p class="description" id="atproto-comments-account-identifier-description">
-			<?php esc_html_e( 'The account handle without @, or its DID.', 'atproto-comments' ); ?>
+			<?php esc_html_e( 'The account handle without @, or its DID.', 'parolas' ); ?>
 		</p>
 		<?php
 	}
@@ -335,16 +335,16 @@ final class Account {
 		<p class="description" id="atproto-comments-account-password-description">
 			<?php
 			if ( $saved ) {
-				esc_html_e( 'An app password is saved. Leave the field empty to keep it.', 'atproto-comments' );
+				esc_html_e( 'An app password is saved. Leave the field empty to keep it.', 'parolas' );
 			} else {
-				esc_html_e( 'No app password is saved.', 'atproto-comments' );
+				esc_html_e( 'No app password is saved.', 'parolas' );
 			}
 			?>
 		</p>
 		<?php if ( '' !== $account['identifier'] || '' !== $account['password'] ) : ?>
 			<p>
 				<button type="submit" class="button button-link-delete" form="<?php echo esc_attr( self::FORGET_FORM ); ?>">
-					<?php esc_html_e( 'Forget account', 'atproto-comments' ); ?>
+					<?php esc_html_e( 'Forget account', 'parolas' ); ?>
 				</button>
 			</p>
 		<?php endif; ?>
@@ -357,9 +357,9 @@ final class Account {
 	public static function field_test() {
 		?>
 		<button type="button" class="button" id="atproto-comments-account-test">
-			<?php esc_html_e( 'Test connection', 'atproto-comments' ); ?>
+			<?php esc_html_e( 'Test connection', 'parolas' ); ?>
 		</button>
-		<p class="description"><?php esc_html_e( 'Checks the saved account: resolves it and signs in to its server.', 'atproto-comments' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Checks the saved account: resolves it and signs in to its server.', 'parolas' ); ?></p>
 		<div id="atproto-comments-account-test-result" aria-live="polite"></div>
 		<?php
 	}
@@ -401,7 +401,7 @@ final class Account {
 			$asset['version'],
 			true
 		);
-		wp_set_script_translations( 'atproto-comments-settings', 'atproto-comments' );
+		wp_set_script_translations( 'atproto-comments-settings', 'parolas' );
 	}
 
 	/**
@@ -462,7 +462,7 @@ final class Account {
 	public static function error_not_configured() {
 		return new \WP_Error(
 			'atproto_comments_account_missing',
-			__( 'The site has no AT Protocol account configured. Save the handle and an app password in the plugin settings first.', 'atproto-comments' ),
+			__( 'The site has no AT Protocol account configured. Save the handle and an app password in the plugin settings first.', 'parolas' ),
 			array( 'status' => 400 )
 		);
 	}

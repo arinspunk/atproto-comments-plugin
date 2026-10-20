@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <ruleset name="AtprotoComments">
-	<description>Coding standards for Comments from atproto.</description>
+	<description>Coding standards for Parolas.</description>
 
 	<file>.</file>
 	<exclude-pattern>/vendor/*</exclude-pattern>
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/dist/*</exclude-pattern>
 	<exclude-pattern>/assets/vendor/*</exclude-pattern>
 
 	<arg name="extensions" value="php"/>
@@ -34,7 +35,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="atproto-comments"/>
+				<element value="parolas"/>
 			</property>
 		</properties>
 	</rule>

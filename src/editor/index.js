@@ -29,12 +29,12 @@ function errorMessage( error ) {
 	if ( error === 'handle_unresolved' ) {
 		return __(
 			'The handle in this link could not be resolved. Check it, or paste the post URL or the at:// URI with the DID (did:…).',
-			'atproto-comments'
+			'parolas'
 		);
 	}
 	return __(
 		'This is not a valid AT Protocol post link. Paste the URL of a post, like https://bsky.app/profile/…/post/…, or its at:// URI.',
-		'atproto-comments'
+		'parolas'
 	);
 }
 
@@ -60,7 +60,7 @@ function ThreadPanel() {
 	return (
 		<PluginDocumentSettingPanel
 			name="atproto-comments-thread"
-			title={ __( 'AT Protocol comments', 'atproto-comments' ) }
+			title={ __( 'AT Protocol comments', 'parolas' ) }
 		>
 			{ done && done.link === saved && (
 				<Notice status="success" onRemove={ () => setDone( null ) }>
@@ -161,10 +161,10 @@ function LinkField( { onPublished } ) {
 			<TextControl
 				__nextHasNoMarginBottom
 				__next40pxDefaultSize
-				label={ __( 'Thread link', 'atproto-comments' ) }
+				label={ __( 'Thread link', 'parolas' ) }
 				help={ __(
 					'Paste the URL of the post or its at:// URI. Leave empty to unlink.',
-					'atproto-comments'
+					'parolas'
 				) }
 				placeholder="at://did:plc:…/app.bsky.feed.post/…"
 				value={ value }
@@ -180,7 +180,7 @@ function LinkField( { onPublished } ) {
 			{ resolving && (
 				<p aria-live="polite">
 					<Spinner />
-					{ __( 'Resolving the handle…', 'atproto-comments' ) }
+					{ __( 'Resolving the handle…', 'parolas' ) }
 				</p>
 			) }
 			{ error && (

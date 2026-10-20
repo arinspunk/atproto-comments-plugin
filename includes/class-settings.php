@@ -120,7 +120,7 @@ final class Settings {
 			if ( self::is_valid_appview( $appview ) ) {
 				$output['appview'] = $appview;
 			} else {
-				self::add_error( 'appview', __( 'The AppView must be a valid https URL. The previous value has been kept.', 'atproto-comments' ) );
+				self::add_error( 'appview', __( 'The AppView must be a valid https URL. The previous value has been kept.', 'parolas' ) );
 			}
 		}
 
@@ -130,7 +130,7 @@ final class Settings {
 			if ( preg_match( '/^[0-9]{1,2}$/', $depth ) && (int) $depth >= 1 && (int) $depth <= 20 ) {
 				$output['max_depth'] = (int) $depth;
 			} else {
-				self::add_error( 'max_depth', __( 'The maximum depth must be a whole number between 1 and 20. The previous value has been kept.', 'atproto-comments' ) );
+				self::add_error( 'max_depth', __( 'The maximum depth must be a whole number between 1 and 20. The previous value has been kept.', 'parolas' ) );
 			}
 		}
 
@@ -189,8 +189,8 @@ final class Settings {
 	 */
 	public static function add_page() {
 		add_options_page(
-			__( 'Comments from atproto', 'atproto-comments' ),
-			__( 'Comments from atproto', 'atproto-comments' ),
+			__( 'Comments from atproto', 'parolas' ),
+			__( 'Comments from atproto', 'parolas' ),
 			'manage_options',
 			self::PAGE,
 			array( __CLASS__, 'render_page' )
@@ -204,10 +204,10 @@ final class Settings {
 		add_settings_section( 'atproto_comments_main', '', '__return_false', self::PAGE );
 
 		$fields = array(
-			'appview'    => __( 'AppView', 'atproto-comments' ),
-			'max_depth'  => __( 'Maximum depth', 'atproto-comments' ),
-			'position'   => __( 'Position', 'atproto-comments' ),
-			'post_types' => __( 'Content types', 'atproto-comments' ),
+			'appview'    => __( 'AppView', 'parolas' ),
+			'max_depth'  => __( 'Maximum depth', 'parolas' ),
+			'position'   => __( 'Position', 'parolas' ),
+			'post_types' => __( 'Content types', 'parolas' ),
 		);
 		foreach ( $fields as $key => $label ) {
 			$args = array();
@@ -258,7 +258,7 @@ final class Settings {
 			value="<?php echo esc_attr( $settings['appview'] ); ?>"
 			aria-describedby="atproto-comments-appview-description" />
 		<p class="description" id="atproto-comments-appview-description">
-			<?php esc_html_e( 'Server that visitors\' browsers query to load the replies. Must use https.', 'atproto-comments' ); ?>
+			<?php esc_html_e( 'Server that visitors\' browsers query to load the replies. Must use https.', 'parolas' ); ?>
 		</p>
 		<?php
 	}
@@ -274,7 +274,7 @@ final class Settings {
 			value="<?php echo esc_attr( (string) $settings['max_depth'] ); ?>"
 			aria-describedby="atproto-comments-max-depth-description" />
 		<p class="description" id="atproto-comments-max-depth-description">
-			<?php esc_html_e( 'How many levels of nested replies to load (1–20). Deeper replies link to the full thread.', 'atproto-comments' ); ?>
+			<?php esc_html_e( 'How many levels of nested replies to load (1–20). Deeper replies link to the full thread.', 'parolas' ); ?>
 		</p>
 		<?php
 	}
@@ -285,12 +285,12 @@ final class Settings {
 	public static function field_position() {
 		$settings = self::get();
 		$options  = array(
-			'replace'       => __( 'Replace the native comments', 'atproto-comments' ),
-			'after_content' => __( 'After the content, keeping the native comments', 'atproto-comments' ),
+			'replace'       => __( 'Replace the native comments', 'parolas' ),
+			'after_content' => __( 'After the content, keeping the native comments', 'parolas' ),
 		);
 		?>
 		<fieldset>
-			<legend class="screen-reader-text"><?php esc_html_e( 'Position', 'atproto-comments' ); ?></legend>
+			<legend class="screen-reader-text"><?php esc_html_e( 'Position', 'parolas' ); ?></legend>
 			<?php foreach ( $options as $value => $label ) : ?>
 				<label>
 					<input type="radio" name="<?php echo esc_attr( self::OPTION ); ?>[position]"
@@ -309,7 +309,7 @@ final class Settings {
 		$active = self::active_post_types();
 		?>
 		<fieldset>
-			<legend class="screen-reader-text"><?php esc_html_e( 'Content types', 'atproto-comments' ); ?></legend>
+			<legend class="screen-reader-text"><?php esc_html_e( 'Content types', 'parolas' ); ?></legend>
 			<?php foreach ( self::available_post_types() as $name => $type ) : ?>
 				<label>
 					<input type="checkbox" name="<?php echo esc_attr( self::OPTION ); ?>[post_types][]"
@@ -317,7 +317,7 @@ final class Settings {
 					<?php echo esc_html( $type->labels->name ); ?>
 				</label><br />
 			<?php endforeach; ?>
-			<p class="description"><?php esc_html_e( 'Content types where posts can be linked to an AT Protocol thread.', 'atproto-comments' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Content types where posts can be linked to an AT Protocol thread.', 'parolas' ); ?></p>
 		</fieldset>
 		<?php
 	}

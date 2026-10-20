@@ -244,7 +244,7 @@ final class Anchor_Post {
 			return self::error_not_found();
 		}
 		if ( ! Settings::is_active_type( $post->post_type ) ) {
-			return self::error_invalid( 'atproto_comments_inactive_type', __( 'AT Protocol comments are not enabled for this content type.', 'atproto-comments' ) );
+			return self::error_invalid( 'atproto_comments_inactive_type', __( 'AT Protocol comments are not enabled for this content type.', 'parolas' ) );
 		}
 		if ( null === self::saved_link( $post ) ) {
 			return self::error_not_linked();
@@ -280,7 +280,7 @@ final class Anchor_Post {
 		if ( $parts['did'] !== $account['did'] ) {
 			return new \WP_Error(
 				'atproto_comments_not_owner',
-				__( 'The linked post does not belong to the site\'s AT Protocol account, so it cannot be deleted from here. You can unlink it.', 'atproto-comments' ),
+				__( 'The linked post does not belong to the site\'s AT Protocol account, so it cannot be deleted from here. You can unlink it.', 'parolas' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -348,7 +348,7 @@ final class Anchor_Post {
 		if ( isset( $output['uri'] ) || isset( $output['value'] ) ) {
 			return new \WP_Error(
 				'atproto_comments_delete_failed',
-				__( 'The post was not deleted: it is still on the AT Protocol server. Try again later.', 'atproto-comments' ),
+				__( 'The post was not deleted: it is still on the AT Protocol server. Try again later.', 'parolas' ),
 				array( 'status' => 502 )
 			);
 		}
@@ -392,10 +392,10 @@ final class Anchor_Post {
 			return self::error_not_found();
 		}
 		if ( ! Settings::is_active_type( $post->post_type ) ) {
-			return self::error_invalid( 'atproto_comments_inactive_type', __( 'AT Protocol comments are not enabled for this content type.', 'atproto-comments' ) );
+			return self::error_invalid( 'atproto_comments_inactive_type', __( 'AT Protocol comments are not enabled for this content type.', 'parolas' ) );
 		}
 		if ( 'publish' !== $post->post_status ) {
-			return self::error_invalid( 'atproto_comments_not_published', __( 'Publish the entry before publishing its anchor post.', 'atproto-comments' ) );
+			return self::error_invalid( 'atproto_comments_not_published', __( 'Publish the entry before publishing its anchor post.', 'parolas' ) );
 		}
 		if ( self::has_link( $post ) ) {
 			return self::error_linked();
@@ -406,14 +406,14 @@ final class Anchor_Post {
 
 		$graphemes = Graphemes::count( $text );
 		if ( '' === trim( $text ) || null === $graphemes ) {
-			return self::error_invalid( 'atproto_comments_text_empty', __( 'Write the text of the post.', 'atproto-comments' ) );
+			return self::error_invalid( 'atproto_comments_text_empty', __( 'Write the text of the post.', 'parolas' ) );
 		}
 		if ( $graphemes > self::MAX_GRAPHEMES || strlen( $text ) > self::MAX_BYTES ) {
 			return self::error_invalid(
 				'atproto_comments_text_too_long',
 				sprintf(
 					/* translators: %d: maximum number of characters, 300. */
-					__( 'The text of the post is too long. The limit is %d characters.', 'atproto-comments' ),
+					__( 'The text of the post is too long. The limit is %d characters.', 'parolas' ),
 					self::MAX_GRAPHEMES
 				)
 			);
@@ -690,7 +690,7 @@ final class Anchor_Post {
 	 * @return \WP_Error
 	 */
 	private static function error_not_found() {
-		return new \WP_Error( 'atproto_comments_post_not_found', __( 'The entry does not exist.', 'atproto-comments' ), array( 'status' => 404 ) );
+		return new \WP_Error( 'atproto_comments_post_not_found', __( 'The entry does not exist.', 'parolas' ), array( 'status' => 404 ) );
 	}
 
 	/**
@@ -702,7 +702,7 @@ final class Anchor_Post {
 	private static function error_locked() {
 		return new \WP_Error(
 			'atproto_comments_locked',
-			__( 'There is already an operation in progress with the post of this entry. Wait a moment and reload the editor.', 'atproto-comments' ),
+			__( 'There is already an operation in progress with the post of this entry. Wait a moment and reload the editor.', 'parolas' ),
 			array( 'status' => 409 )
 		);
 	}
@@ -713,7 +713,7 @@ final class Anchor_Post {
 	 * @return \WP_Error
 	 */
 	private static function error_not_linked() {
-		return self::error_invalid( 'atproto_comments_not_linked', __( 'This entry is not linked to an AT Protocol post.', 'atproto-comments' ) );
+		return self::error_invalid( 'atproto_comments_not_linked', __( 'This entry is not linked to an AT Protocol post.', 'parolas' ) );
 	}
 
 	/**
@@ -724,7 +724,7 @@ final class Anchor_Post {
 	private static function error_delete_unconfirmed() {
 		return new \WP_Error(
 			'atproto_comments_delete_unconfirmed',
-			__( 'It could not be confirmed that the post was deleted. Try again.', 'atproto-comments' ),
+			__( 'It could not be confirmed that the post was deleted. Try again.', 'parolas' ),
 			array( 'status' => 502 )
 		);
 	}
@@ -737,7 +737,7 @@ final class Anchor_Post {
 	private static function error_linked() {
 		return new \WP_Error(
 			'atproto_comments_already_linked',
-			__( 'This entry is already linked to an AT Protocol post. Unlink it first to publish a new one.', 'atproto-comments' ),
+			__( 'This entry is already linked to an AT Protocol post. Unlink it first to publish a new one.', 'parolas' ),
 			array( 'status' => 409 )
 		);
 	}
@@ -750,7 +750,7 @@ final class Anchor_Post {
 	private static function error_uncertain() {
 		return new \WP_Error(
 			'atproto_comments_uncertain',
-			__( 'It is not known whether the post was created. Check the account\'s profile before trying again; if the post is there, paste its link in the thread link field.', 'atproto-comments' ),
+			__( 'It is not known whether the post was created. Check the account\'s profile before trying again; if the post is there, paste its link in the thread link field.', 'parolas' ),
 			array( 'status' => 502 )
 		);
 	}

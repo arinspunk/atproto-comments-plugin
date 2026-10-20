@@ -130,7 +130,7 @@ final class Identity {
 		if ( null === $pds ) {
 			return new \WP_Error(
 				'atproto_comments_no_pds',
-				__( 'The account\'s DID document does not declare an AT Protocol server (PDS).', 'atproto-comments' ),
+				__( 'The account\'s DID document does not declare an AT Protocol server (PDS).', 'parolas' ),
 				array( 'status' => 502 )
 			);
 		}
@@ -194,7 +194,7 @@ final class Identity {
 		if ( ! in_array( $handle, $doc['handles'], true ) ) {
 			return new \WP_Error(
 				'atproto_comments_handle_mismatch',
-				__( 'The handle is not verified: its DID document does not declare it. Check the handle or use the DID.', 'atproto-comments' ),
+				__( 'The handle is not verified: its DID document does not declare it. Check the handle or use the DID.', 'parolas' ),
 				array( 'status' => 502 )
 			);
 		}
@@ -341,7 +341,7 @@ final class Identity {
 	private static function error_handle_unresolved() {
 		return new \WP_Error(
 			'atproto_comments_handle_unresolved',
-			__( 'The handle does not exist or could not be resolved to a DID.', 'atproto-comments' ),
+			__( 'The handle does not exist or could not be resolved to a DID.', 'parolas' ),
 			array( 'status' => 502 )
 		);
 	}
@@ -354,7 +354,7 @@ final class Identity {
 	private static function error_did_unresolved() {
 		return new \WP_Error(
 			'atproto_comments_did_unresolved',
-			__( 'The account\'s DID document could not be obtained or is not valid.', 'atproto-comments' ),
+			__( 'The account\'s DID document could not be obtained or is not valid.', 'parolas' ),
 			array( 'status' => 502 )
 		);
 	}
