@@ -189,8 +189,8 @@ final class Settings {
 	 */
 	public static function add_page() {
 		add_options_page(
-			__( 'Comments from atproto', 'parolas' ),
-			__( 'Comments from atproto', 'parolas' ),
+			__( 'Parolas', 'parolas' ),
+			__( 'Parolas', 'parolas' ),
 			'manage_options',
 			self::PAGE,
 			array( __CLASS__, 'render_page' )

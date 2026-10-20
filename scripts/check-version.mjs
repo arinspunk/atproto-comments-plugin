@@ -14,7 +14,7 @@ const TAG_PATTERN = /^v(\d+\.\d+\.\d+)$/;
  * Extracts every version from the contents of the files that hold one.
  *
  * @param {Object} files             File contents.
- * @param {string} files.plugin      atproto-comments.php.
+ * @param {string} files.plugin      parolas.php.
  * @param {string} files.readme      readme.txt.
  * @param {string} files.packageJson package.json.
  * @param {string} files.packageLock package-lock.json.
@@ -30,11 +30,11 @@ export function readVersions( { plugin, readme, packageJson, packageLock } ) {
 
 	return [
 		{
-			source: 'atproto-comments.php (Version header)',
+			source: 'parolas.php (Version header)',
 			version: match( plugin, /^[ \t/*]*Version:[ \t]*(\S+)/m ),
 		},
 		{
-			source: 'atproto-comments.php (ATPROTO_COMMENTS_VERSION)',
+			source: 'parolas.php (ATPROTO_COMMENTS_VERSION)',
 			version: match(
 				plugin,
 				/define\(\s*'ATPROTO_COMMENTS_VERSION',\s*'([^']+)'\s*\)/
@@ -101,7 +101,7 @@ export function checkVersions( versions, tag ) {
 export function readFiles( root ) {
 	const read = ( name ) => readFileSync( join( root, name ), 'utf8' );
 	return {
-		plugin: read( 'atproto-comments.php' ),
+		plugin: read( 'parolas.php' ),
 		readme: read( 'readme.txt' ),
 		packageJson: read( 'package.json' ),
 		packageLock: read( 'package-lock.json' ),

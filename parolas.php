@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Comments from atproto
+ * Plugin Name:       Parolas – Comments with atproto
  * Plugin URI:        https://github.com/arinspunk/atproto-comments-plugin
  * Description:       Shows replies to an AT Protocol (Bluesky) post as the comments of a post.
  * Version:           0.1.0
@@ -10,7 +10,7 @@
  * Author URI:        https://xulioze.com/
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       atproto-comments
+ * Text Domain:       parolas
  *
  * @package AtprotoComments
  */

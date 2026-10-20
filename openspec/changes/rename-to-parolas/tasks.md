@@ -8,7 +8,7 @@
 
 ## 2. Fichero principal, cabecera y página de ajustes
 
-- [ ] 2.1 `git mv atproto-comments.php parolas.php`. En la cabecera: `Plugin Name: Parolas – Comments with atproto` y `Text Domain: parolas`. Actualizar las referencias: `scripts/check-version.mjs` (lectura y nombres de las fuentes) y `tests/js/check-version.test.js`, `tests/js/dist.test.js`, `tests/php/bootstrap.php` y `WP_UNINSTALL_PLUGIN` en `tests/php/uninstall-test.php` (`parolas/parolas.php`). Se verifica con `npm run check-version`, `npm run test:js` y `npm run test:php`.
+- [x] 2.1 `git mv atproto-comments.php parolas.php`. En la cabecera: `Plugin Name: Parolas – Comments with atproto` y `Text Domain: parolas`. Actualizar las referencias: `scripts/check-version.mjs` (lectura y nombres de las fuentes) y `tests/js/check-version.test.js`, `tests/js/dist.test.js`, `tests/php/bootstrap.php` y `WP_UNINSTALL_PLUGIN` en `tests/php/uninstall-test.php` (`parolas/parolas.php`). Se verifica con `npm run check-version`, `npm run test:js` y `npm run test:php`.
 - [ ] 2.2 Título y entrada de menú de la página de ajustes: «Parolas» (decisión 4). Se verifica cargando la página de ajustes en wp-env y con el título en la prueba de humo (tarea 3.2).
 
 ## 3. Entorno, empaquetado y prueba de humo
