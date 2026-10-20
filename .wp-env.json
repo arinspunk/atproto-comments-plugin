@@ -11,9 +11,9 @@
 		"https://downloads.wordpress.org/plugin/classic-editor.zip"
 	],
 	"mappings": {
-		"wp-content/plugins/atproto-comments": "."
+		"wp-content/plugins/parolas": "."
 	},
 	"lifecycleScripts": {
-		"afterStart": "wp-env run cli wp plugin activate atproto-comments plugin-check && wp-env run cli wp plugin deactivate classic-editor && wp-env run tests-cli wp plugin activate atproto-comments"
+		"afterStart": "wp-env run cli wp plugin activate parolas plugin-check && wp-env run cli wp plugin deactivate classic-editor && wp-env run tests-cli wp plugin activate parolas"
 	}
 }
