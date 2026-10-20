@@ -1,7 +1,7 @@
 /**
- * Builds the distribution zip: copies the plugin to dist/atproto-comments/,
+ * Builds the distribution zip: copies the plugin to dist/parolas/,
  * leaving out what .distignore lists, and zips it as
- * dist/atproto-comments-<version>.zip. Run after `npm run build`.
+ * dist/parolas-<version>.zip. Run after `npm run build`.
  *
  * Usage: node scripts/dist.mjs
  */
@@ -17,7 +17,7 @@ import {
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const SLUG = 'atproto-comments';
+export const SLUG = 'parolas';
 
 /**
  * Files that only exist after the build; the zip is useless without them.

@@ -9,12 +9,12 @@
 ## 2. Fichero principal, cabecera y página de ajustes
 
 - [x] 2.1 `git mv atproto-comments.php parolas.php`. En la cabecera: `Plugin Name: Parolas – Comments with atproto` y `Text Domain: parolas`. Actualizar las referencias: `scripts/check-version.mjs` (lectura y nombres de las fuentes) y `tests/js/check-version.test.js`, `tests/js/dist.test.js`, `tests/php/bootstrap.php` y `WP_UNINSTALL_PLUGIN` en `tests/php/uninstall-test.php` (`parolas/parolas.php`). Se verifica con `npm run check-version`, `npm run test:js` y `npm run test:php`.
-- [ ] 2.2 Título y entrada de menú de la página de ajustes: «Parolas» (decisión 4). Se verifica cargando la página de ajustes en wp-env y con el título en la prueba de humo (tarea 3.2).
+- [x] 2.2 Título y entrada de menú de la página de ajustes: «Parolas» (decisión 4). Se verifica cargando la página de ajustes en wp-env y con el título en la prueba de humo (tarea 3.2).
 
 ## 3. Entorno, empaquetado y prueba de humo
 
 - [x] 3.1 Montar el plugin en `wp-content/plugins/parolas`: clave de `mappings` y activación de `afterStart` en `.wp-env.json`, `--env-cwd` de `test:php` y `test:php:multisite`, y `make-pot` (`languages/parolas.pot`, `--slug=parolas --domain=parolas`) y `plugin-check` (`wp plugin check parolas`) en `package.json`. Regenerar el `.pot` con `npm run make-pot` y borrar `languages/atproto-comments.pot`. Se verifica con `npx wp-env start --update` (el plugin `parolas` queda activo), `npm run test:php`, `npm run test:php:multisite` y `npm run plugin-check` en la última versión sin filas `ERROR` y sin `textdomain_mismatch`.
-- [ ] 3.2 `scripts/dist.mjs`: `SLUG = 'parolas'`. `scripts/smoke.sh`: comprobación de `dist/parolas/parolas.php`, la clave de `mappings` `wp-content/plugins/parolas` hacia `./dist/parolas`, `wp plugin activate parolas`, `wp plugin check parolas` y el título «Parolas» de la página de ajustes. Se verifica con `npm run dist && unzip -l dist/parolas-*.zip` (carpeta `parolas/` con `parolas.php`, sin `atproto-comments.php`) y con `scripts/smoke.sh 6.5` y `scripts/smoke.sh latest` en verde.
+- [x] 3.2 `scripts/dist.mjs`: `SLUG = 'parolas'`. `scripts/smoke.sh`: comprobación de `dist/parolas/parolas.php`, la clave de `mappings` `wp-content/plugins/parolas` hacia `./dist/parolas`, `wp plugin activate parolas`, `wp plugin check parolas` y el título «Parolas» de la página de ajustes. Se verifica con `npm run dist && unzip -l dist/parolas-*.zip` (carpeta `parolas/` con `parolas.php`, sin `atproto-comments.php`) y con `scripts/smoke.sh 6.5` y `scripts/smoke.sh latest` en verde.
 
 ## 4. Workflows de GitHub (los aplica el usuario)
 

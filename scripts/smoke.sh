@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Installs the plugin from dist/atproto-comments/ (npm run dist) in a clean
+# Installs the plugin from dist/parolas/ (npm run dist) in a clean
 # wp-env and checks that it works: activation, a linked post that prints the
 # component with its assets, the settings page and an empty debug.log. With
 # "latest" it also runs Plugin Check on the installed copy.
@@ -24,8 +24,8 @@ target="$1"
 
 cd "$(dirname "$0")/.."
 
-if [ ! -f dist/atproto-comments/atproto-comments.php ]; then
-	echo "dist/atproto-comments/ not found: run \`npm run dist\` first." >&2
+if [ ! -f dist/parolas/parolas.php ]; then
+	echo "dist/parolas/ not found: run \`npm run dist\` first." >&2
 	exit 1
 fi
 
@@ -66,7 +66,7 @@ cat > "$override" <<JSON
 	"core": $core,
 	"phpVersion": "$php",
 	"mappings": {
-		"wp-content/plugins/atproto-comments": "./dist/atproto-comments"
+		"wp-content/plugins/parolas": "./dist/parolas"
 	},
 	"config": {
 		"WP_DEBUG": true,
@@ -77,7 +77,7 @@ cat > "$override" <<JSON
 JSON
 
 echo "== Starting wp-env ($target, PHP $php)"
-# Recreate the containers: npm run dist replaces dist/atproto-comments/, and
+# Recreate the containers: npm run dist replaces dist/parolas/, and
 # running containers would keep the mount of the deleted directory.
 wp_env stop >/dev/null 2>&1 || true
 for attempt in 1 2 3; do
@@ -91,7 +91,7 @@ done
 wp_env reset all
 
 echo "== Activating the plugin"
-cli wp plugin activate atproto-comments
+cli wp plugin activate parolas
 [ "$target" = latest ] && cli wp plugin activate plugin-check
 cli rm -f wp-content/debug.log
 
@@ -129,7 +129,7 @@ curl -fsS -o /dev/null -c "$jar" -b 'wordpress_test_cookie=WP%20Cookie%20check' 
 settings="$(curl -fsS -b "$jar" "$site/wp-admin/options-general.php?page=atproto-comments")" ||
 	fail "the settings page did not load"
 rm -f "$jar"
-grep -q 'Comments from atproto' <<<"$settings" || fail "the settings page has no title"
+grep -q '<h1>Parolas</h1>' <<<"$settings" || fail "the settings page has no title"
 check_asset 'build/settings.js' "$settings"
 
 echo "== debug.log"
@@ -142,7 +142,7 @@ echo "ok empty"
 
 if [ "$target" = latest ]; then
 	echo "== Plugin Check"
-	report="$(cli wp plugin check atproto-comments --ignore-warnings --format=csv)"
+	report="$(cli wp plugin check parolas --ignore-warnings --format=csv)"
 	if grep -q ',ERROR,' <<<"$report"; then
 		echo "$report" >&2
 		fail "Plugin Check reports errors"
