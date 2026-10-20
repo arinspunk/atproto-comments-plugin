@@ -9,7 +9,7 @@ El entorno es `@wordpress/env` (dependencia de desarrollo en `package.json`), so
 
 ## Cómo está montado
 
-- `.wp-env.json` mapea el repo como `wp-content/plugins/atproto-comments`. Los cambios en PHP se ven al recargar; el JS del panel necesita `npm run build` (o `npm start` en modo watch).
+- `.wp-env.json` mapea el repo como `wp-content/plugins/parolas`. Los cambios en PHP se ven al recargar; el JS del panel necesita `npm run build` (o `npm start` en modo watch).
 - WordPress vive en `~/.wp-env/<hash>/` y la base de datos en volúmenes de Docker: nada de eso está en el repo.
 - Dos sitios: desarrollo en http://localhost:8888 y tests en http://localhost:8889. Usuario `admin`, contraseña `password`.
 - Contenedores: `cli` (WP-CLI del sitio de desarrollo) y `tests-cli` (PHPUnit). Ambos tienen `composer`.
@@ -20,7 +20,7 @@ El entorno es `@wordpress/env` (dependencia de desarrollo en `package.json`), so
 1. Comprueba que Docker está en marcha: `docker info --format '{{.ServerVersion}}'`. Si falla, pide al usuario que abra Docker Desktop.
 2. Si no existe `node_modules/`, ejecuta `npm ci`. Si no existen `build/` o `assets/vendor/`, ejecuta `npm run build`.
 3. `npx wp-env start` (tarda 1–3 minutos; usa un timeout largo).
-4. Si no existe `vendor/`: `npx wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments composer install`.
+4. Si no existe `vendor/`: `npx wp-env run tests-cli --env-cwd=wp-content/plugins/parolas composer install`.
 
 Parar: `npx wp-env stop` (conserva los datos). Borrar todo: `npx wp-env destroy` (pide confirmación al usuario antes).
 
@@ -38,7 +38,7 @@ Parar: `npx wp-env stop` (conserva los datos). Borrar todo: `npx wp-env destroy`
 | Para | Comando |
 |---|---|
 | WP-CLI | `npx wp-env run cli wp <comando>` |
-| PHPCS | `npx wp-env run cli --env-cwd=wp-content/plugins/atproto-comments composer phpcs` |
+| PHPCS | `npx wp-env run cli --env-cwd=wp-content/plugins/parolas composer phpcs` |
 | PHPUnit | `npm run test:php` |
 | PHPUnit multisite | `npm run test:php:multisite` |
 | Tests JS (Vitest, en el host) | `npm run test:js` |

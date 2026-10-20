@@ -1,14 +1,15 @@
 schema: spec-driven
 
 context: |
-  Plugin de WordPress que envuelve el web component atproto-comments (npm).
+  Plugin de WordPress «Parolas – Comments with atproto» (slug parolas) que
+  envuelve el web component atproto-comments (npm).
   Escribe todos los artefactos en español.
   Compatibilidad mínima: WordPress 6.5 y PHP 7.4. Sin sintaxis de PHP 8
   (match, tipos unión, propiedades promovidas, named arguments).
   Distribución en WordPress.org: GPLv2+, sin CDN ni código remoto, todo
   servicio externo declarado en "External services" de readme.txt.
   Prefijos: namespace AtprotoComments, constantes ATPROTO_COMMENTS_,
-  opciones y hooks atproto_comments_, metas _atproto_, text domain atproto-comments.
+  opciones y hooks atproto_comments_, metas _atproto_, text domain parolas.
   Las llamadas del servidor a la red usan wp_remote_* con timeout y errores traducibles.
   No se fija bsky.social ni ningún PDS en el código; la identidad se resuelve.
 
