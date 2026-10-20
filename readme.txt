@@ -4,7 +4,7 @@ Tags: comments, bluesky, atproto, fediverse, social
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -160,6 +160,9 @@ Its settings and the AT Protocol account (handle and encrypted app password) are
 4. Settings: where the comments go and the site's AT Protocol account.
 
 == Changelog ==
+
+= 0.1.1 =
+* Renamed to Parolas – Comments with atproto. The plugin folder and text domain are now `parolas`.
 
 = 0.1.0 =
 * First public version.

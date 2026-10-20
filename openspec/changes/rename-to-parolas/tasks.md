@@ -25,7 +25,7 @@
 ## 5. Documentación, versión y configuración de OpenSpec
 
 - [x] 5.1 `readme.txt`: título «Parolas – Comments with atproto», la primera frase de la descripción, el aviso de independencia («Parolas is an independent project…») y las rutas «Settings → Parolas». `README.md`: título, aviso, la fila del fichero principal, las rutas `wp-content/plugins/parolas`, el nombre del zip en «Releasing» y la sección de envío (slug `parolas`). Skill `.claude/skills/wp-env/SKILL.md`: las rutas. `openspec/config.yaml`: text domain `parolas` en `context`. Se verifica con `grep -rn "Comments from atproto\|plugins/atproto-comments\|atproto-comments\.php" --exclude-dir=node_modules --exclude-dir=vendor --exclude-dir=openspec .` sin resultados fuera de los cambios archivados, y siguiendo en local los comandos del README que cambian.
-- [ ] 5.2 Versión 0.1.1 (`npm version 0.1.1 --no-git-tag-version`, cabecera y constante de `parolas.php`, `Stable tag`) y entrada `= 0.1.1 =` en el changelog de `readme.txt` (decisión 6). Se verifica con `npm run check-version -- v0.1.1`.
+- [x] 5.2 Versión 0.1.1 (`npm version 0.1.1 --no-git-tag-version`, cabecera y constante de `parolas.php`, `Stable tag`) y entrada `= 0.1.1 =` en el changelog de `readme.txt` (decisión 6). Se verifica con `npm run check-version -- v0.1.1`.
 
 ## 6. Integración
 
