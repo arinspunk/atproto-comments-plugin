@@ -29,7 +29,7 @@
 
 ## 6. Integración
 
-- [ ] 6.1 Ejecutar en local la cadena completa sin publicar sobre el mismo zip: `npm run check-version -- v0.1.1`, `npm run dist`, `scripts/smoke.sh 6.5` y `scripts/smoke.sh latest`. Comprobar a mano en wp-env que el panel «AT Protocol comments» del editor aparece y que la página de ajustes se llama «Parolas». Se verifica con los cuatro comandos en verde y las dos comprobaciones manuales.
+- [x] 6.1 Ejecutar en local la cadena completa sin publicar sobre el mismo zip: `npm run check-version -- v0.1.1`, `npm run dist`, `scripts/smoke.sh 6.5` y `scripts/smoke.sh latest`. Comprobar a mano en wp-env que el panel «AT Protocol comments» del editor aparece y que la página de ajustes se llama «Parolas». Se verifica con los cuatro comandos en verde y las dos comprobaciones manuales.
 
 ## Workflow follow-up
 
