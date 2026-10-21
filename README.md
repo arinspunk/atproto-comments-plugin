@@ -1,15 +1,15 @@
-# Comments from atproto
+# Parolas – Comments with atproto
 
 [![CI](https://github.com/arinspunk/atproto-comments-plugin/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arinspunk/atproto-comments-plugin/actions/workflows/ci.yml)
 
-![Comments from atproto: the replies to an AT Protocol post shown as the comments of a WordPress post](.github/assets/readme-banner.png)
+![Parolas: the replies to an AT Protocol post shown as the comments of a WordPress post](.github/assets/readme-banner.png)
 
 WordPress plugin that shows the replies to an AT Protocol post — from Bluesky or any compatible app (Mu, Deer, etc.), on any server (Eurosky, a personal one, etc.) — as the comments of a WordPress post. Publish the post from the editor, or paste the link to an existing one, and the conversation appears under your entry, threaded, in your site's language. Visitors reply from their own app; there is nothing to moderate in WordPress.
 
 - **Using the plugin:** see [`readme.txt`](readme.txt) for features, installation, FAQ, external services and privacy. <!-- When published: and the plugin page on WordPress.org. -->
 - **Working on the plugin:** read on.
 
-Comments from atproto is an independent project by the author of the [`atproto-comments`](https://github.com/arinspunk/atproto-comments) web component. It is not affiliated with or endorsed by AT Protocol or Bluesky.
+Parolas is an independent project by the author of the [`atproto-comments`](https://github.com/arinspunk/atproto-comments) web component. It is not affiliated with or endorsed by AT Protocol or Bluesky.
 
 ## How it works
 
@@ -24,7 +24,7 @@ The design decisions behind each part, with the alternatives that were discarded
 
 | Path | Contents |
 |---|---|
-| `atproto-comments.php` | Plugin header, constants, autoloader, bootstrap |
+| `parolas.php` | Plugin header, constants, autoloader, bootstrap |
 | `includes/` | PHP classes, namespace `AtprotoComments`, one per file (`Foo_Bar` → `class-foo-bar.php`) |
 | `includes/class-display.php`, `class-ui-strings.php` | Front end: when and where the component is printed, its attributes and translated strings |
 | `includes/class-post-meta.php`, `class-thread-uri.php`, `class-thread-link.php` | The link: meta registration, classic metabox, normalization of `at://` URIs and app URLs, handle resolution |
@@ -53,7 +53,7 @@ Requirements: Node 22 (version in `.nvmrc`; with nvm, `nvm use`) and Docker (for
 npm ci
 npm run build            # copies the component to assets/vendor/ and builds the editor panel and the settings script
 npx wp-env start         # http://localhost:8888 (admin / password)
-npx wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments composer install
+npx wp-env run tests-cli --env-cwd=wp-content/plugins/parolas composer install
 ```
 
 ### WordPress and PHP combinations
@@ -79,7 +79,7 @@ After switching combinations, run `npx wp-env start --update`. To go back to the
 ```bash
 npm run lint:js
 npm run test:js                   # Vitest, in Node
-npx wp-env run cli --env-cwd=wp-content/plugins/atproto-comments composer phpcs
+npx wp-env run cli --env-cwd=wp-content/plugins/parolas composer phpcs
 npm run test:php                  # PHPUnit (WordPress test suite in wp-env)
 npm run test:php:multisite        # the same suite as multisite
 npm run plugin-check              # exits 0 even with errors: check the output
@@ -122,7 +122,7 @@ Please don't report vulnerabilities in public issues. Use GitHub's [private vuln
 | Check | What it does | How to reproduce it locally |
 |---|---|---|
 | `js` | `npm ci`, `npm run check-version`, `npm run lint:js`, `npm run test:js`, `npm run build` | The same commands |
-| `phpcs` | `composer install` and `composer phpcs` with PHP 7.4 on the runner | `npx wp-env run cli --env-cwd=wp-content/plugins/atproto-comments composer phpcs` |
+| `phpcs` | `composer install` and `composer phpcs` with PHP 7.4 on the runner | `npx wp-env run cli --env-cwd=wp-content/plugins/parolas composer phpcs` |
 | `phpunit (minimum)` | WordPress 6.5 + PHP 7.4: `npm run test:php` and `npm run test:php:multisite` | Without `.wp-env.override.json`: `npx wp-env start --update` and both commands |
 | `phpunit (latest)` | Latest WordPress + PHP 8.3: the same, plus `npm run plugin-check` (fails on any `ERROR`) | With the current-combination override: `npx wp-env start --update`, both commands and `npm run plugin-check` |
 
@@ -152,8 +152,8 @@ Releases are built by `.github/workflows/release.yml` from a `vX.Y.Z` tag on `ma
 ### Publishing a version
 
 1. In a pull request, set the new version in these places, and add the changelog entry to `readme.txt`:
-   - `Version:` in the header of `atproto-comments.php`;
-   - `ATPROTO_COMMENTS_VERSION` in `atproto-comments.php`;
+   - `Version:` in the header of `parolas.php`;
+   - `ATPROTO_COMMENTS_VERSION` in `parolas.php`;
    - `Stable tag:` in `readme.txt`;
    - `version` in `package.json`, and both `version` keys of `package-lock.json` (`npm version X.Y.Z --no-git-tag-version` updates the three).
 2. Check them: `npm run check-version` (the CI runs it too).
@@ -172,8 +172,8 @@ To release a tag again (for example after the WordPress.org approval), run the *
 The WordPress.org SVN repository only exists after the plugin is approved, so the first version is submitted by hand:
 
 1. With the `WPORG_DEPLOY` variable unset, push the tag. The workflow stops after the GitHub Release; the `deploy` job is skipped.
-2. Download `atproto-comments-X.Y.Z.zip` from the GitHub Release and upload it at <https://wordpress.org/plugins/developers/add/>.
-3. **Ask for the slug `atproto-comments`.** WordPress.org proposes one from the plugin name (`comments-from-atproto`). If the written permission from Bluesky has arrived, attach it: the guidelines don't allow a slug that starts with another party's trademark without proof of authorization.
+2. Download `parolas-X.Y.Z.zip` from the GitHub Release and upload it at <https://wordpress.org/plugins/developers/add/>. While the submission is under review, upload new versions with the **Upload updated** button on that same page, and answer in the review email thread.
+3. **The slug must be `parolas`.** WordPress.org proposes one from the plugin name (`parolas-comments-with-atproto`); change it on the submission page, or ask for it explicitly in the review thread. It can't be changed after the approval, and it must match the text domain. The name and slug can't start with someone else's trademark (guideline 17): the plugin's own name goes first, and "atproto" last, after "with".
 4. After the approval, in the repository settings:
    - create the environment `wordpress-org` with the secrets `SVN_USERNAME` and `SVN_PASSWORD` (your WordPress.org account);
    - set the repository variable `WPORG_DEPLOY` to `true`;
@@ -198,7 +198,7 @@ Screenshots are numbered in the order of the captions in the `== Screenshots ==`
 ### Testing the zip locally
 
 ```bash
-npm run dist                 # builds and writes dist/atproto-comments-X.Y.Z.zip and dist/atproto-comments/
+npm run dist                 # builds and writes dist/parolas-X.Y.Z.zip and dist/parolas/
 unzip -l dist/atproto-comments-*.zip
 scripts/smoke.sh 6.5         # WordPress 6.5 + PHP 7.4
 scripts/smoke.sh latest      # latest WordPress + PHP 8.3, plus Plugin Check

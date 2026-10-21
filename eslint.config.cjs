@@ -17,5 +17,12 @@ module.exports = [
 				'@wordpress/plugins',
 			],
 		},
+		rules: {
+			// Must match the plugin slug, as on WordPress.org.
+			'@wordpress/i18n-text-domain': [
+				'error',
+				{ allowedTextDomain: 'parolas' },
+			],
+		},
 	},
 ];

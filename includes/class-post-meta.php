@@ -71,7 +71,7 @@ final class Post_Meta {
 		}
 		add_meta_box(
 			'atproto-comments-thread',
-			__( 'AT Protocol comments', 'atproto-comments' ),
+			__( 'AT Protocol comments', 'parolas' ),
 			array( __CLASS__, 'render_metabox' ),
 			$post_type,
 			'side',
@@ -90,7 +90,7 @@ final class Post_Meta {
 		$value = get_post_meta( $post->ID, self::KEY, true );
 		?>
 		<p>
-			<label for="atproto-comments-thread-uri"><?php esc_html_e( 'Thread link', 'atproto-comments' ); ?></label>
+			<label for="atproto-comments-thread-uri"><?php esc_html_e( 'Thread link', 'parolas' ); ?></label>
 			<input type="text" class="widefat code" id="atproto-comments-thread-uri"
 				name="<?php echo esc_attr( self::FIELD ); ?>"
 				value="<?php echo esc_attr( is_string( $value ) ? $value : '' ); ?>"
@@ -98,7 +98,7 @@ final class Post_Meta {
 				aria-describedby="atproto-comments-thread-uri-help" />
 		</p>
 		<p class="description" id="atproto-comments-thread-uri-help">
-			<?php esc_html_e( 'Paste the URL of the post or its at:// URI. Leave empty to unlink.', 'atproto-comments' ); ?>
+			<?php esc_html_e( 'Paste the URL of the post or its at:// URI. Leave empty to unlink.', 'parolas' ); ?>
 		</p>
 		<?php
 	}
@@ -125,7 +125,7 @@ final class Post_Meta {
 			$asset['version'],
 			true
 		);
-		wp_set_script_translations( 'atproto-comments-editor', 'atproto-comments' );
+		wp_set_script_translations( 'atproto-comments-editor', 'parolas' );
 
 		$post = get_post();
 		if ( $post ) {
@@ -243,9 +243,9 @@ final class Post_Meta {
 	 */
 	public static function error_message( $error ) {
 		if ( 'handle_unresolved' === $error ) {
-			return __( 'The handle in the AT Protocol link could not be resolved. Check it, or paste the post URL or the at:// URI with the DID (did:…). The previous link has been kept.', 'atproto-comments' );
+			return __( 'The handle in the AT Protocol link could not be resolved. Check it, or paste the post URL or the at:// URI with the DID (did:…). The previous link has been kept.', 'parolas' );
 		}
-		return __( 'The AT Protocol link is not valid. Paste the URL of a post, like https://bsky.app/profile/…/post/…, or its at:// URI. The previous link has been kept.', 'atproto-comments' );
+		return __( 'The AT Protocol link is not valid. Paste the URL of a post, like https://bsky.app/profile/…/post/…, or its at:// URI. The previous link has been kept.', 'parolas' );
 	}
 
 	/**

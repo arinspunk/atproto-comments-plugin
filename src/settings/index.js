@@ -45,15 +45,13 @@ domReady( () => {
 
 		button.disabled = true;
 		button.setAttribute( 'aria-busy', 'true' );
-		show( region, 'info', [
-			__( 'Testing the connection…', 'atproto-comments' ),
-		] );
+		show( region, 'info', [ __( 'Testing the connection…', 'parolas' ) ] );
 
 		const notes = unsaved
 			? [
 					__(
 						'The form has unsaved account changes: the test used the saved account.',
-						'atproto-comments'
+						'parolas'
 					),
 				]
 			: [];
@@ -64,16 +62,16 @@ domReady( () => {
 				method: 'POST',
 			} );
 			show( region, 'success', [
-				__( 'Connection successful.', 'atproto-comments' ),
+				__( 'Connection successful.', 'parolas' ),
 				sprintf(
 					/* translators: %s: account handle. */
-					__( 'Handle: %s', 'atproto-comments' ),
+					__( 'Handle: %s', 'parolas' ),
 					result.handle
 				),
 				/* translators: %s: account DID. */
-				sprintf( __( 'DID: %s', 'atproto-comments' ), result.did ),
+				sprintf( __( 'DID: %s', 'parolas' ), result.did ),
 				/* translators: %s: URL of the account's server (PDS). */
-				sprintf( __( 'Server: %s', 'atproto-comments' ), result.pds ),
+				sprintf( __( 'Server: %s', 'parolas' ), result.pds ),
 				...notes,
 			] );
 		} catch ( error ) {
@@ -82,7 +80,7 @@ domReady( () => {
 					? error.message
 					: __(
 							'The connection could not be tested. Try again.',
-							'atproto-comments'
+							'parolas'
 						);
 			show( region, 'error', [ message, ...notes ] );
 		} finally {

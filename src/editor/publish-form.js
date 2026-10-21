@@ -34,7 +34,7 @@ function editorData() {
 function uncertainMessage() {
 	return __(
 		'It is not known whether the post was created. Check the account’s profile before trying again; if the post is there, paste its link in the thread link field.',
-		'atproto-comments'
+		'parolas'
 	);
 }
 
@@ -100,7 +100,7 @@ export default function PublishForm( { onPublished } ) {
 			<p className="atproto-comments-publish">
 				{ __(
 					'Only editors can publish posts to the site’s AT Protocol account.',
-					'atproto-comments'
+					'parolas'
 				) }
 			</p>
 		);
@@ -111,7 +111,7 @@ export default function PublishForm( { onPublished } ) {
 			<p className="atproto-comments-publish">
 				{ __(
 					'This entry is already linked to a post. To publish a new one, empty the link and update the entry.',
-					'atproto-comments'
+					'parolas'
 				) }
 			</p>
 		);
@@ -124,41 +124,38 @@ export default function PublishForm( { onPublished } ) {
 	if ( status !== 'publish' ) {
 		reason = __(
 			'Publish the entry before publishing its post.',
-			'atproto-comments'
+			'parolas'
 		);
 	} else if ( dirty || saving ) {
 		reason = __(
 			'The entry has unsaved changes. Update it first.',
-			'atproto-comments'
+			'parolas'
 		);
 	} else if ( ! accountReady ) {
 		reason = settingsUrl ? (
 			<span>
 				{ __(
 					'The site has no AT Protocol account configured.',
-					'atproto-comments'
+					'parolas'
 				) }{ ' ' }
 				<a href={ settingsUrl }>
-					{ __(
-						'Configure it in the settings.',
-						'atproto-comments'
-					) }
+					{ __( 'Configure it in the settings.', 'parolas' ) }
 				</a>
 			</span>
 		) : (
 			__(
 				'The site has no AT Protocol account configured. Ask an administrator to set it up.',
-				'atproto-comments'
+				'parolas'
 			)
 		);
 	} else if ( text.trim() === '' ) {
-		reason = __( 'Write the text of the post.', 'atproto-comments' );
+		reason = __( 'Write the text of the post.', 'parolas' );
 	} else if ( tooLong ) {
 		reason = sprintf(
 			/* translators: %d: maximum number of characters, 300. */
 			__(
 				'The text is too long. The limit is %d characters.',
-				'atproto-comments'
+				'parolas'
 			),
 			MAX_GRAPHEMES
 		);
@@ -181,7 +178,7 @@ export default function PublishForm( { onPublished } ) {
 			onPublished(
 				__(
 					'The post was published and the entry is linked to it.',
-					'atproto-comments'
+					'parolas'
 				),
 				uri
 			);
@@ -197,14 +194,14 @@ export default function PublishForm( { onPublished } ) {
 		<div className="atproto-comments-publish">
 			<TextareaControl
 				__nextHasNoMarginBottom
-				label={ __( 'Post text', 'atproto-comments' ) }
+				label={ __( 'Post text', 'parolas' ) }
 				value={ text }
 				onChange={ setText }
 				disabled={ publishing }
 				rows={ 4 }
 				help={ sprintf(
 					/* translators: 1: characters written, 2: limit, 300. */
-					__( '%1$d / %2$d characters', 'atproto-comments' ),
+					__( '%1$d / %2$d characters', 'parolas' ),
 					graphemes,
 					MAX_GRAPHEMES
 				) }
@@ -216,7 +213,7 @@ export default function PublishForm( { onPublished } ) {
 				isBusy={ publishing }
 				aria-describedby="atproto-comments-publish-help"
 			>
-				{ __( 'Publish to Bluesky', 'atproto-comments' ) }
+				{ __( 'Publish to Bluesky', 'parolas' ) }
 			</Button>
 			<p
 				id="atproto-comments-publish-help"
@@ -224,7 +221,7 @@ export default function PublishForm( { onPublished } ) {
 			>
 				{ __(
 					'Creates the post with a card that links to this entry. It can be seen in any AT Protocol app, such as Bluesky.',
-					'atproto-comments'
+					'parolas'
 				) }
 			</p>
 			{ reason && (

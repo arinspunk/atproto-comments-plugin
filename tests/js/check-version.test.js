@@ -15,8 +15,8 @@ const files = ( versions = {} ) => {
 		...versions,
 	};
 	return {
-		plugin: `<?php\n/**\n * Plugin Name: Comments from atproto\n * Version:           ${ v.header }\n */\ndefine( 'ATPROTO_COMMENTS_VERSION', '${ v.constant }' );\n`,
-		readme: `=== Comments from atproto ===\nRequires PHP: 7.4\nStable tag: ${ v.stable }\n`,
+		plugin: `<?php\n/**\n * Plugin Name: Parolas – Comments with atproto\n * Version:           ${ v.header }\n */\ndefine( 'ATPROTO_COMMENTS_VERSION', '${ v.constant }' );\n`,
+		readme: `=== Parolas – Comments with atproto ===\nRequires PHP: 7.4\nStable tag: ${ v.stable }\n`,
 		packageJson: JSON.stringify( { name: 'p', version: v.pkg } ),
 		packageLock: JSON.stringify( {
 			name: 'p',
@@ -38,7 +38,7 @@ describe( 'readVersions', () => {
 
 	it( 'returns null for a missing version', () => {
 		const input = files();
-		input.readme = '=== Comments from atproto ===\n';
+		input.readme = '=== Parolas – Comments with atproto ===\n';
 		expect( readVersions( input )[ 2 ].version ).toBeNull();
 	} );
 } );
@@ -53,8 +53,8 @@ describe( 'checkVersions', () => {
 	} );
 
 	it.each( [
-		[ 'header', 'atproto-comments.php (Version header)' ],
-		[ 'constant', 'atproto-comments.php (ATPROTO_COMMENTS_VERSION)' ],
+		[ 'header', 'parolas.php (Version header)' ],
+		[ 'constant', 'parolas.php (ATPROTO_COMMENTS_VERSION)' ],
 		[ 'stable', 'readme.txt (Stable tag)' ],
 		[ 'lock', 'package-lock.json (version)' ],
 		[ 'lockRoot', 'package-lock.json (packages[""].version)' ],

@@ -18,7 +18,7 @@ class Uninstall_Test extends WP_UnitTestCase {
 	 */
 	private function uninstall() {
 		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-			define( 'WP_UNINSTALL_PLUGIN', 'atproto-comments/atproto-comments.php' );
+			define( 'WP_UNINSTALL_PLUGIN', 'parolas/parolas.php' );
 		}
 		include dirname( __DIR__, 2 ) . '/uninstall.php';
 	}

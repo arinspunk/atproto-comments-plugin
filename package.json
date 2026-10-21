@@ -1,6 +1,6 @@
 {
 	"name": "atproto-comments-plugin",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"description": "WordPress plugin that shows AT Protocol replies as post comments.",
 	"license": "GPL-2.0-or-later",
@@ -11,12 +11,12 @@
 		"dist": "npm run build && node scripts/dist.mjs",
 		"start": "wp-scripts start editor=./src/editor/index.js settings=./src/settings/index.js --output-path=build",
 		"test:js": "wp-scripts test-unit-js",
-		"test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments vendor/bin/phpunit",
-		"test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments env WP_TESTS_MULTISITE=1 vendor/bin/phpunit",
+		"test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/parolas vendor/bin/phpunit",
+		"test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/parolas env WP_TESTS_MULTISITE=1 vendor/bin/phpunit",
 		"wp-env": "wp-env",
 		"lint:js": "wp-scripts lint-js src tests/js",
-		"make-pot": "wp-env run cli --env-cwd=wp-content/plugins/atproto-comments wp i18n make-pot . languages/atproto-comments.pot --slug=atproto-comments --domain=atproto-comments --exclude=node_modules,vendor,tests,assets/vendor,src,scripts",
-		"plugin-check": "wp-env run cli wp plugin check atproto-comments --exclude-directories=.git,node_modules,vendor,tests,scripts,openspec,.claude,.github,dist --exclude-files=composer.json,composer.lock,package.json,package-lock.json,phpcs.xml.dist,phpunit.xml.dist,.wp-env.json,.wp-env.override.json,eslint.config.cjs,.gitignore,.nvmrc,README.md,.DS_Store,.phpunit.result.cache"
+		"make-pot": "wp-env run cli --env-cwd=wp-content/plugins/parolas wp i18n make-pot . languages/parolas.pot --slug=parolas --domain=parolas --exclude=node_modules,vendor,tests,assets/vendor,src,scripts",
+		"plugin-check": "wp-env run cli wp plugin check parolas --exclude-directories=.git,node_modules,vendor,tests,scripts,openspec,.claude,.github,dist --exclude-files=.distignore,composer.json,composer.lock,package.json,package-lock.json,phpcs.xml.dist,phpunit.xml.dist,.wp-env.json,.wp-env.override.json,eslint.config.cjs,.gitignore,.nvmrc,README.md,.DS_Store,.phpunit.result.cache"
 	},
 	"dependencies": {
 		"atproto-comments": "1.1.0"

@@ -227,26 +227,26 @@ final class Xrpc {
 	public static function error( $code, $name = '' ) {
 		switch ( $code ) {
 			case 'atproto_comments_network':
-				$message = __( 'The AT Protocol server did not respond. Try again later.', 'atproto-comments' );
+				$message = __( 'The AT Protocol server did not respond. Try again later.', 'parolas' );
 				break;
 			case 'atproto_comments_auth':
-				$message = __( 'The AT Protocol server rejected the credentials. Check the account in the settings.', 'atproto-comments' );
+				$message = __( 'The AT Protocol server rejected the credentials. Check the account in the settings.', 'parolas' );
 				break;
 			case 'atproto_comments_auth_factor':
-				$message = __( 'The account asks for a sign-in code. Use an app password instead of the main password.', 'atproto-comments' );
+				$message = __( 'The account asks for a sign-in code. Use an app password instead of the main password.', 'parolas' );
 				break;
 			case 'atproto_comments_account_unavailable':
-				$message = __( 'The AT Protocol account is suspended or deactivated.', 'atproto-comments' );
+				$message = __( 'The AT Protocol account is suspended or deactivated.', 'parolas' );
 				break;
 			case 'atproto_comments_rate_limited':
-				$message = __( 'The AT Protocol server has received too many requests. Try again in a few minutes.', 'atproto-comments' );
+				$message = __( 'The AT Protocol server has received too many requests. Try again in a few minutes.', 'parolas' );
 				break;
 			case 'atproto_comments_record_not_found':
-				$message = __( 'The post does not exist on the AT Protocol server.', 'atproto-comments' );
+				$message = __( 'The post does not exist on the AT Protocol server.', 'parolas' );
 				break;
 			default:
 				$code    = 'atproto_comments_server';
-				$message = __( 'The AT Protocol server returned an unexpected response.', 'atproto-comments' );
+				$message = __( 'The AT Protocol server returned an unexpected response.', 'parolas' );
 		}
 
 		if ( '' !== $name && preg_match( '/^[A-Za-z][A-Za-z0-9]{0,63}\z/', $name ) ) {

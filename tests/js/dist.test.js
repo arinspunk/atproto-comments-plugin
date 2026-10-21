@@ -93,7 +93,7 @@ describe( 'the repository .distignore', () => {
 		[ 'includes', true ],
 		[ 'languages', true ],
 		[ 'templates', true ],
-		[ 'atproto-comments.php', false ],
+		[ 'parolas.php', false ],
 		[ 'uninstall.php', false ],
 		[ 'readme.txt', false ],
 	] )( 'keeps %s', ( path, isDirectory ) => {

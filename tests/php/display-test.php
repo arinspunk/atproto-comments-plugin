@@ -180,7 +180,7 @@ class Display_Test extends WP_UnitTestCase {
 
 	public function test_strings_attribute_with_translations() {
 		$filter = static function ( $translation, $text, $domain ) {
-			return 'atproto-comments' === $domain && 'Reply to {name}' === $text ? 'Responder a {name}' : $translation;
+			return 'parolas' === $domain && 'Reply to {name}' === $text ? 'Responder a {name}' : $translation;
 		};
 		add_filter( 'gettext', $filter, 10, 3 );
 		$this->view( $this->post_id );

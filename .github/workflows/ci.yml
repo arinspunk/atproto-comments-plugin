@@ -91,7 +91,7 @@ jobs:
           done
           exit 1
       - run: npx wp-env run cli wp core version
-      - run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/atproto-comments composer install --no-interaction --no-progress
+      - run: npx wp-env run tests-cli --env-cwd=wp-content/plugins/parolas composer install --no-interaction --no-progress
       - run: npm run test:php
       - run: npm run test:php:multisite
       - name: Plugin Check

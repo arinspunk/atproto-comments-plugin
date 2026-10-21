@@ -50,7 +50,7 @@ function deleteFailure( error ) {
 	}
 	return __(
 		'It could not be confirmed that the post was deleted. Try again.',
-		'atproto-comments'
+		'parolas'
 	);
 }
 
@@ -68,11 +68,11 @@ function repliesText( count ) {
 	if ( count === null ) {
 		return __(
 			'The number of replies could not be checked. If the post has replies, they will no longer be shown in its thread or on this entry, but they will stay on the profiles of the people who wrote them.',
-			'atproto-comments'
+			'parolas'
 		);
 	}
 	if ( count === 0 ) {
-		return __( 'The post has no replies.', 'atproto-comments' );
+		return __( 'The post has no replies.', 'parolas' );
 	}
 	return sprintf(
 		/* translators: %d: approximate number of replies to the post. */
@@ -80,7 +80,7 @@ function repliesText( count ) {
 			'About %d reply will no longer be shown in the thread or on this entry. It will stay on the profile of the person who wrote it.',
 			'About %d replies will no longer be shown in the thread or on this entry. They will stay on the profiles of the people who wrote them.',
 			count,
-			'atproto-comments'
+			'parolas'
 		),
 		count
 	);
@@ -115,24 +115,21 @@ function ConfirmDelete( { uri, appview, onConfirm, onCancel } ) {
 
 	return (
 		<Modal
-			title={ __( 'Delete the post from Bluesky?', 'atproto-comments' ) }
+			title={ __( 'Delete the post from Bluesky?', 'parolas' ) }
 			onRequestClose={ onCancel }
 			size="small"
 		>
 			<p>
 				{ __(
 					'The post will be deleted from the site’s AT Protocol account and the entry will be unlinked. This cannot be undone.',
-					'atproto-comments'
+					'parolas'
 				) }
 			</p>
 			<p aria-live="polite">
 				{ text ?? (
 					<span>
 						<Spinner />
-						{ __(
-							'Checking the number of replies…',
-							'atproto-comments'
-						) }
+						{ __( 'Checking the number of replies…', 'parolas' ) }
 					</span>
 				) }
 			</p>
@@ -145,10 +142,10 @@ function ConfirmDelete( { uri, appview, onConfirm, onCancel } ) {
 				} }
 			>
 				<Button variant="tertiary" onClick={ onCancel }>
-					{ __( 'Cancel', 'atproto-comments' ) }
+					{ __( 'Cancel', 'parolas' ) }
 				</Button>
 				<Button variant="primary" isDestructive onClick={ onConfirm }>
-					{ __( 'Delete the post', 'atproto-comments' ) }
+					{ __( 'Delete the post', 'parolas' ) }
 				</Button>
 			</div>
 		</Modal>
@@ -209,7 +206,7 @@ export default function LinkedState( { uri, onDone } ) {
 			onDone(
 				__(
 					'The entry is unlinked. The post and its replies are still on Bluesky.',
-					'atproto-comments'
+					'parolas'
 				),
 				''
 			);
@@ -219,7 +216,7 @@ export default function LinkedState( { uri, onDone } ) {
 					failure?.message ||
 						__(
 							'The entry could not be unlinked. Try again.',
-							'atproto-comments'
+							'parolas'
 						)
 				);
 			}
@@ -243,7 +240,7 @@ export default function LinkedState( { uri, onDone } ) {
 			onDone(
 				__(
 					'The post was deleted from Bluesky and the entry is unlinked.',
-					'atproto-comments'
+					'parolas'
 				),
 				''
 			);
@@ -260,12 +257,7 @@ export default function LinkedState( { uri, onDone } ) {
 
 	return (
 		<div className="atproto-comments-linked">
-			<p>
-				{ __(
-					'This entry is linked to the post:',
-					'atproto-comments'
-				) }
-			</p>
+			<p>{ __( 'This entry is linked to the post:', 'parolas' ) }</p>
 			<p>
 				<code
 					className="atproto-comments-linked__uri"
@@ -277,7 +269,7 @@ export default function LinkedState( { uri, onDone } ) {
 			{ url && (
 				<p>
 					<ExternalLink href={ url }>
-						{ __( 'Open the post', 'atproto-comments' ) }
+						{ __( 'Open the post', 'parolas' ) }
 					</ExternalLink>
 				</p>
 			) }
@@ -291,7 +283,7 @@ export default function LinkedState( { uri, onDone } ) {
 					isBusy={ busy === 'unlink' }
 					disabled={ busy !== null }
 				>
-					{ __( 'Unlink', 'atproto-comments' ) }
+					{ __( 'Unlink', 'parolas' ) }
 				</Button>
 				{ state !== 'hidden' && (
 					<Button
@@ -306,30 +298,27 @@ export default function LinkedState( { uri, onDone } ) {
 								: undefined
 						}
 					>
-						{ __( 'Delete from Bluesky', 'atproto-comments' ) }
+						{ __( 'Delete from Bluesky', 'parolas' ) }
 					</Button>
 				) }
 			</div>
 			<p className="description">
 				{ __(
 					'Unlinking does not delete the post or its replies.',
-					'atproto-comments'
+					'parolas'
 				) }
 			</p>
 			{ state === 'needs-test' && (
 				<p className="description" id="atproto-comments-delete-hint">
 					{ __(
 						'Test the connection in the settings to be able to delete from here.',
-						'atproto-comments'
+						'parolas'
 					) }
 					{ data.settingsUrl && (
 						<span>
 							{ ' ' }
 							<a href={ data.settingsUrl }>
-								{ __(
-									'Open the settings',
-									'atproto-comments'
-								) }
+								{ __( 'Open the settings', 'parolas' ) }
 							</a>
 						</span>
 					) }

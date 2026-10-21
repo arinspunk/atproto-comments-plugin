@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SLUG: atproto-comments
+  SLUG: parolas
 
 jobs:
   verify:
