@@ -20,7 +20,7 @@
 
 > La política de Claude Code de la organización no deja a Claude leer `.github/workflows/`. Claude deja los cambios redactados en el scratchpad; el usuario los aplica, ejecuta `actionlint` y marca la tarea.
 
-- [ ] 4.1 `release.yml` y `wporg-assets.yml`: `SLUG: parolas`. `ci.yml`: `--env-cwd=wp-content/plugins/parolas` en el paso de `composer install`. Se verifica con `actionlint` y con la CI de la PR en verde (los cuatro checks de siempre).
+- [x] 4.1 `release.yml` y `wporg-assets.yml`: `SLUG: parolas`. `ci.yml`: `--env-cwd=wp-content/plugins/parolas` en el paso de `composer install`. Se verifica con `actionlint` y con la CI de la PR en verde (los cuatro checks de siempre).
 
 ## 5. Documentación, versión y configuración de OpenSpec
 
