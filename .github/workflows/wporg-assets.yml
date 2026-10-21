@@ -47,7 +47,7 @@ jobs:
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-          SLUG: atproto-comments
+          SLUG: parolas
           ASSETS_DIR: .wordpress-org
           # Copy only readme.txt: the repository has no build/ or
           # assets/vendor/, so without it the action always sees changes
