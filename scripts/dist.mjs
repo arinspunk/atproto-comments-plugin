@@ -26,6 +26,7 @@ export const REQUIRED = [
 	'build/editor.js',
 	'build/settings.js',
 	'assets/vendor/atproto-comments/index.js',
+	'assets/vendor/atproto-comments/element.js',
 ];
 
 /**

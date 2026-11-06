@@ -2,8 +2,9 @@
 #
 # Installs the plugin from dist/parolas/ (npm run dist) in a clean
 # wp-env and checks that it works: activation, a linked post that prints the
-# component with its assets, the settings page and an empty debug.log. With
-# "latest" it also runs Plugin Check on the installed copy.
+# component with its assets (and the element.js that index.js imports), the
+# settings page and an empty debug.log. With "latest" it also runs Plugin
+# Check on the installed copy.
 #
 # Usage: scripts/smoke.sh <6.5|latest>
 #
@@ -115,9 +116,24 @@ check_asset() {
 	url="${url//&#038;/&}"
 	[ "$(curl -s -o /dev/null -w '%{http_code}' "$url")" = 200 ] ||
 		fail "$1 does not respond 200 ($url)"
+	asset_url="$url"
 	echo "ok $1"
 }
 check_asset 'assets/vendor/atproto-comments/index.js' "$page"
+
+# element.js is not in the page: index.js imports it, with ?ver= added by
+# scripts/vendor.mjs. Every import must use the same versioned URL.
+index_js="$(curl -fsS "$asset_url")" || fail "index.js could not be downloaded"
+specifiers="$(grep -oE "[\"']\./element\.js[^\"']*[\"']" <<<"$index_js" | tr -d "\"'" | sort -u || true)"
+[ -n "$specifiers" ] || fail "index.js does not import ./element.js"
+[ "$(wc -l <<<"$specifiers")" -eq 1 ] || fail "index.js imports element.js with different URLs: $specifiers"
+[[ "$specifiers" == ./element.js\?ver=* ]] || fail "index.js imports element.js without ?ver= ($specifiers)"
+element_url="${asset_url%%\?*}"
+element_url="${element_url%/*}/${specifiers#./}"
+[ "$(curl -s -o /dev/null -w '%{http_code}' "$element_url")" = 200 ] ||
+	fail "element.js does not respond 200 ($element_url)"
+echo "ok assets/vendor/atproto-comments/element.js ($specifiers)"
+
 check_asset 'assets/vendor/atproto-comments/atproto-comments.css' "$page"
 
 echo "== Settings page"

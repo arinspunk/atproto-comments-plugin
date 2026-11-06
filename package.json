@@ -1,6 +1,6 @@
 {
 	"name": "atproto-comments-plugin",
-	"version": "0.1.1",
+	"version": "0.2.0",
 	"private": true,
 	"description": "WordPress plugin that shows AT Protocol replies as post comments.",
 	"license": "GPL-2.0-or-later",
@@ -15,11 +15,11 @@
 		"test:php:multisite": "wp-env run tests-cli --env-cwd=wp-content/plugins/parolas env WP_TESTS_MULTISITE=1 vendor/bin/phpunit",
 		"wp-env": "wp-env",
 		"lint:js": "wp-scripts lint-js src tests/js",
-		"make-pot": "wp-env run cli --env-cwd=wp-content/plugins/parolas wp i18n make-pot . languages/parolas.pot --slug=parolas --domain=parolas --exclude=node_modules,vendor,tests,assets/vendor,src,scripts",
+		"make-pot": "wp-env run cli --env-cwd=wp-content/plugins/parolas wp i18n make-pot . languages/parolas.pot --slug=parolas --domain=parolas --exclude=node_modules,vendor,tests,assets/vendor,src,scripts,dist",
 		"plugin-check": "wp-env run cli wp plugin check parolas --exclude-directories=.git,node_modules,vendor,tests,scripts,openspec,.claude,.github,dist --exclude-files=.distignore,composer.json,composer.lock,package.json,package-lock.json,phpcs.xml.dist,phpunit.xml.dist,.wp-env.json,.wp-env.override.json,eslint.config.cjs,.gitignore,.nvmrc,README.md,.DS_Store,.phpunit.result.cache"
 	},
 	"dependencies": {
-		"atproto-comments": "1.1.0"
+		"atproto-comments": "2.0.0"
 	},
 	"devDependencies": {
 		"@wordpress/env": "11.17.0",
