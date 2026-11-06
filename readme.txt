@@ -4,7 +4,7 @@ Tags: comments, bluesky, atproto, fediverse, social
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.1
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -146,7 +146,7 @@ In "Replace" mode the native comment list and form are hidden on linked posts, b
 
 = Can visitors reply from my site? =
 
-Not directly. The "Comment" and "Reply" buttons open the conversation in the visitor's AT Protocol app, where they reply with their own account.
+Not directly. The "Comment" and "Reply" buttons open a panel where visitors choose their AT Protocol app (Bluesky, Blacksky, Deer and others, or any app by its domain). The conversation opens there, and they reply with their own account. The app they chose last time comes first.
 
 = What happens if I uninstall the plugin? =
 
@@ -160,6 +160,17 @@ Its settings and the AT Protocol account (handle and encrypted app password) are
 4. Settings: where the comments go and the site's AT Protocol account.
 
 == Changelog ==
+
+= 0.2.0 =
+* Updated the atproto-comments web component to 2.0.0.
+* "Comment" and "Reply" open a panel at the bottom of the window to choose the app: Bluesky, Anisota, Blacksky, Deer, Impro, Mu, Northsky, Red Dwarf or any other by its domain. The app chosen last comes first, marked "Last used".
+* The author and the date of each reply link to the profile and to the reply in the visitor's chosen app.
+* Replies hidden by the thread author, and replies from accounts with labels that hide them, are no longer shown.
+* The link to more replies says "View more replies", since it opens the visitor's chosen app.
+* Replies more than a year old show the date in the site's language format.
+* Fixed: replies from authors without a DID no longer show a broken "Reply" button; the comments load when the browser blocks `localStorage` and in Firefox before 125; the "Other app" field has an accessible name.
+* New translatable strings for the panel.
+* For themes with their own CSS or JS for the comments: the `.atproto-app-popover*` classes are now `.atproto-app-sheet*` (the panel is a `<dialog>`); `.atproto-reply__byline` is a link when the author has a DID; the date is inside a new `a.atproto-reply__permalink`, and the `· ` before it moved from `.atproto-reply__time::before` to `.atproto-reply__permalink::before`; the buttons that open the panel no longer have `aria-expanded` or `popovertarget` (use the `open` attribute of `dialog.atproto-app-sheet`).
 
 = 0.1.1 =
 * Renamed to Parolas – Comments with atproto. The plugin folder and text domain are now `parolas`.

@@ -34,7 +34,7 @@ The design decisions behind each part, with the alternatives that were discarded
 | `src/editor/` | Block editor panel (link field, publish form, linked state) |
 | `src/settings/` | Connection test button on the settings page |
 | `templates/comments.php` | Replacement for the theme's comments template |
-| `scripts/vendor.mjs` | Copies the web component from `node_modules` to `assets/vendor/` |
+| `scripts/vendor.mjs` | Copies the web component from `node_modules` to `assets/vendor/`, adding `?ver=` to the import of `element.js` in `index.js` |
 | `scripts/check-version.mjs`, `dist.mjs`, `smoke.sh` | Release tooling: version check, distribution zip, smoke test of the zip (see [Releasing](#releasing)) |
 | `.distignore` | What the distribution zip leaves out |
 | `.wordpress-org/` | WordPress.org directory assets: icon, banner, screenshots (not in the zip) |
@@ -199,12 +199,12 @@ Screenshots are numbered in the order of the captions in the `== Screenshots ==`
 
 ```bash
 npm run dist                 # builds and writes dist/parolas-X.Y.Z.zip and dist/parolas/
-unzip -l dist/atproto-comments-*.zip
+unzip -l dist/parolas-*.zip
 scripts/smoke.sh 6.5         # WordPress 6.5 + PHP 7.4
 scripts/smoke.sh latest      # latest WordPress + PHP 8.3, plus Plugin Check
 ```
 
-`smoke.sh` installs `dist/atproto-comments/` in wp-env and checks the activation, a linked post that prints the component with its assets, the settings page and an empty `debug.log`. It **resets the wp-env databases** and replaces `.wp-env.override.json` while it runs (it restores it at the end); run `npx wp-env start --update` afterwards to go back to your usual environment.
+`smoke.sh` installs `dist/parolas/` in wp-env and checks the activation, a linked post that prints the component with its assets (including the `element.js` that `index.js` imports, with its `?ver=`), the settings page and an empty `debug.log`. It **resets the wp-env databases** and replaces `.wp-env.override.json` while it runs (it restores it at the end); run `npx wp-env start --update` afterwards to go back to your usual environment.
 
 ## License
 

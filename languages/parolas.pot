@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Parolas – Comments with atproto 0.1.0\n"
+"Project-Id-Version: Parolas – Comments with atproto 0.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/parolas\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-20T21:25:05+00:00\n"
+"POT-Creation-Date: 2026-11-06T10:42:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: parolas\n"
@@ -252,65 +252,96 @@ msgstr ""
 msgid "Content types where posts can be linked to an AT Protocol thread."
 msgstr ""
 
-#: includes/class-ui-strings.php:45
+#: includes/class-ui-strings.php:51
 msgid "Comment"
 msgstr ""
 
-#: includes/class-ui-strings.php:46
+#: includes/class-ui-strings.php:52
 msgid "Reply"
 msgstr ""
 
 #. translators: Accessible label of the reply button. {name} is the author's name; keep it as is.
-#: includes/class-ui-strings.php:48
+#: includes/class-ui-strings.php:54
 msgid "Reply to {name}"
 msgstr ""
 
-#: includes/class-ui-strings.php:49
+#. translators: Heading of the panel where visitors choose the app to comment with. It ends in an ellipsis because the app names follow.
+#: includes/class-ui-strings.php:56
+msgid "Comment in…"
+msgstr ""
+
+#. translators: Heading of the panel where visitors choose the app to reply with. {name} is the author's name; keep it as is. It ends in an ellipsis because the app names follow.
+#: includes/class-ui-strings.php:58
+msgid "Reply to {name} in…"
+msgstr ""
+
+#: includes/class-ui-strings.php:59
+msgctxt "close the app picker"
+msgid "Close"
+msgstr ""
+
+#. translators: Badge next to the app the visitor chose last time.
+#: includes/class-ui-strings.php:61
+msgid "Last used"
+msgstr ""
+
+#: includes/class-ui-strings.php:62
 msgid "Other app"
 msgstr ""
 
 #. translators: Placeholder of the field where visitors type the domain of their AT Protocol app.
-#: includes/class-ui-strings.php:51
+#: includes/class-ui-strings.php:64
 msgid "app.example"
 msgstr ""
 
-#: includes/class-ui-strings.php:52
+#. translators: Accessible name of the arrow button that opens the app typed in the "Other app" field.
+#: includes/class-ui-strings.php:66
+msgctxt "open the app typed in Other app"
+msgid "Open"
+msgstr ""
+
+#: includes/class-ui-strings.php:67
 msgid "Invalid domain"
 msgstr ""
 
-#: includes/class-ui-strings.php:53
+#: includes/class-ui-strings.php:68
 msgid "Comments couldn't be loaded."
 msgstr ""
 
-#: includes/class-ui-strings.php:54
-msgid "View more on Bluesky"
+#: includes/class-ui-strings.php:69
+msgid "View more replies"
 msgstr ""
 
-#: includes/class-ui-strings.php:55
+#: includes/class-ui-strings.php:70
+msgctxt "name shown for a reply author with no name or handle"
+msgid "Unknown"
+msgstr ""
+
+#: includes/class-ui-strings.php:71
 msgctxt "relative time under one minute"
 msgid "now"
 msgstr ""
 
 #. translators: Abbreviation of "minutes", shown after a number as in "5 m".
-#: includes/class-ui-strings.php:57
+#: includes/class-ui-strings.php:73
 msgctxt "abbreviation of minutes"
 msgid "m"
 msgstr ""
 
 #. translators: Abbreviation of "hours", shown after a number as in "5 h".
-#: includes/class-ui-strings.php:59
+#: includes/class-ui-strings.php:75
 msgctxt "abbreviation of hours"
 msgid "h"
 msgstr ""
 
 #. translators: Abbreviation of "days", shown after a number as in "5 d".
-#: includes/class-ui-strings.php:61
+#: includes/class-ui-strings.php:77
 msgctxt "abbreviation of days"
 msgid "d"
 msgstr ""
 
 #. translators: Abbreviation of "months", shown after a number as in "5 mo".
-#: includes/class-ui-strings.php:63
+#: includes/class-ui-strings.php:79
 msgctxt "abbreviation of months"
 msgid "mo"
 msgstr ""
