@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/arinspunk/atproto-comments-plugin/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/arinspunk/atproto-comments-plugin/actions/workflows/ci.yml)
 
-![Parolas: the replies to an AT Protocol post shown as the comments of a WordPress post](.github/assets/readme-banner.png)
+![Parolas: the replies to an AT Protocol post shown as the comments of a WordPress post](.github/assets/readme-banner.jpg)
 
 WordPress plugin that shows the replies to an AT Protocol post — from Bluesky or any compatible app (Mu, Deer, etc.), on any server (Eurosky, a personal one, etc.) — as the comments of a WordPress post. Publish the post from the editor, or paste the link to an existing one, and the conversation appears under your entry, threaded, in your site's language. Visitors reply from their own app; there is nothing to moderate in WordPress.
 
